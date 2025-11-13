@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f8ee9dbbbeecf944b6ae2f317b30eab, type: 3}
+  m_Name: CoconutMall
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: 77e2e2ca5ec527843bee68fbd33f444b, type: 3}
+  bpm: 132
+  beatsPerMeasure: 4
+  firstBeatOffsetSec: 0
+  stepsPerMeasure: 16
+  notes:
+  - step: 0
+    length_in_steps: 8
+    lane: 0
+  - step: 8
+    length_in_steps: 8
+    lane: 3
+  - step: 16
+    length_in_steps: 8
+    lane: 1
+  - step: 24
+    length_in_steps: 4
+    lane: 2
+  - step: 28
+    length_in_steps: 4
+    lane: 1
+  - step: 32
+    length_in_steps: 8
+    lane: 0
+  - step: 40
+    length_in_steps: 8
+    lane: 1
+  - step: 50
+    length_in_steps: 2
+    lane: 0
+  - step: 52
+    length_in_steps: 2
+    lane: 2
+  - step: 56
+    length_in_steps: 8
+    lane: 1
