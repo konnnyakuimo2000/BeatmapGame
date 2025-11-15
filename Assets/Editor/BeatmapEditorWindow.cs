@@ -60,6 +60,9 @@ public class BeatmapEditorWindow : EditorWindow
 
         // --- 既存のノーツを描画 ---
         DrawNotes();
+
+        // --- 小節番号を描画 ---
+        DrawMeasureNumbers(contentRect);
         
         // --- マウス操作の処理 ---
         HandleMouseInput(contentRect);
@@ -294,5 +297,53 @@ public class BeatmapEditorWindow : EditorWindow
     private void SortNotes()
     {
         currentBeatmap.notes = currentBeatmap.notes.OrderBy(n => n.step).ThenBy(n => n.lane).ToList();
+    }
+
+    /// <summary>
+    /// タイムラインの上部に小節番号を描画する
+    /// </summary>
+    void DrawMeasureNumbers(Rect contentRect)
+    {
+        // 0除算を避ける
+        if (currentBeatmap.stepsPerMeasure <= 0) return;
+
+        // スタイルを定義 (読みやすいように白文字)
+        GUIStyle labelStyle = new GUIStyle(EditorStyles.label);
+        labelStyle.normal.textColor = Color.white;
+
+        // --- パフォーマンス最適化 ---
+        // 画面に「見えている」範囲だけを描画対象にする
+
+        // 見えているX座標の開始位置と終了位置
+        float startX = scrollPosition.x;
+        float endX = scrollPosition.x + position.width; // ウィンドウの幅
+
+        // 見えている最初のステップ番号
+        // (例: スクロール位置 120 / 幅 12 = ステップ 10)
+        int startStep = (int)(startX / STEP_WIDTH);
+        
+        // 見えている最後のステップ番号
+        int endStep = (int)(endX / STEP_WIDTH) + 2; // +2で余裕を持たせる
+
+        // 描画を開始すべき「小節の先頭ステップ」を計算
+        // (例: startStepが20, 1小節が16なら、16から描画)
+        int startMeasureStep = (startStep / currentBeatmap.stepsPerMeasure) * currentBeatmap.stepsPerMeasure;
+        
+        // --- 描画ループ ---
+        // 見えている範囲の小節線だけをループ
+        for (int i = startMeasureStep; i <= endStep; i += currentBeatmap.stepsPerMeasure)
+        {
+            // 小節線のX座標
+            float x = i * STEP_WIDTH;
+            
+            // 小節番号 (1始まり)
+            int measureNumber = (i / currentBeatmap.stepsPerMeasure) + 1;
+            
+            // 描画するRect (xは線の位置+2px, yは一番上, 幅40px, 高さ20px)
+            Rect labelRect = new Rect(x + 2f, contentRect.y, 40f, 20f);
+            
+            // 描画
+            GUI.Label(labelRect, measureNumber.ToString(), labelStyle);
+        }
     }
 }

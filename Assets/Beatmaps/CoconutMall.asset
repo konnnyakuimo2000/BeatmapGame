@@ -28,23 +28,164 @@ MonoBehaviour:
     length_in_steps: 8
     lane: 1
   - step: 24
-    length_in_steps: 4
+    length_in_steps: 8
     lane: 2
-  - step: 28
-    length_in_steps: 4
-    lane: 1
   - step: 32
     length_in_steps: 8
     lane: 0
   - step: 40
-    length_in_steps: 8
-    lane: 1
+    length_in_steps: 4
+    lane: 3
   - step: 48
-    length_in_steps: 1
-    lane: 0
-  - step: 49
-    length_in_steps: 1
+    length_in_steps: 2
     lane: 3
   - step: 52
     length_in_steps: 12
+    lane: 1
+  - step: 64
+    length_in_steps: 4
+    lane: 3
+  - step: 68
+    length_in_steps: 4
+    lane: 0
+  - step: 72
+    length_in_steps: 4
+    lane: 3
+  - step: 76
+    length_in_steps: 4
+    lane: 0
+  - step: 80
+    length_in_steps: 4
+    lane: 1
+  - step: 84
+    length_in_steps: 4
+    lane: 0
+  - step: 88
+    length_in_steps: 4
+    lane: 2
+  - step: 92
+    length_in_steps: 4
+    lane: 3
+  - step: 96
+    length_in_steps: 4
+    lane: 0
+  - step: 100
+    length_in_steps: 4
+    lane: 3
+  - step: 104
+    length_in_steps: 4
+    lane: 2
+  - step: 108
+    length_in_steps: 4
+    lane: 1
+  - step: 112
+    length_in_steps: 1
+    lane: 0
+  - step: 114
+    length_in_steps: 1
+    lane: 1
+  - step: 116
+    length_in_steps: 1
+    lane: 0
+  - step: 117
+    length_in_steps: 1
+    lane: 1
+  - step: 118
+    length_in_steps: 1
+    lane: 2
+  - step: 119
+    length_in_steps: 1
+    lane: 3
+  - step: 124
+    length_in_steps: 4
+    lane: 2
+  - step: 128
+    length_in_steps: 2
+    lane: 1
+  - step: 130
+    length_in_steps: 2
+    lane: 2
+  - step: 132
+    length_in_steps: 3
+    lane: 3
+  - step: 135
+    length_in_steps: 1
+    lane: 1
+  - step: 137
+    length_in_steps: 2
+    lane: 1
+  - step: 140
+    length_in_steps: 1
+    lane: 2
+  - step: 142
+    length_in_steps: 2
+    lane: 3
+  - step: 144
+    length_in_steps: 2
+    lane: 0
+  - step: 146
+    length_in_steps: 2
+    lane: 1
+  - step: 148
+    length_in_steps: 2
+    lane: 0
+  - step: 150
+    length_in_steps: 2
+    lane: 1
+  - step: 152
+    length_in_steps: 1
+    lane: 0
+  - step: 153
+    length_in_steps: 1
+    lane: 1
+  - step: 154
+    length_in_steps: 1
+    lane: 2
+  - step: 155
+    length_in_steps: 1
+    lane: 3
+  - step: 158
+    length_in_steps: 2
+    lane: 2
+  - step: 160
+    length_in_steps: 2
+    lane: 0
+  - step: 162
+    length_in_steps: 2
+    lane: 1
+  - step: 164
+    length_in_steps: 2
+    lane: 2
+  - step: 166
+    length_in_steps: 2
+    lane: 3
+  - step: 168
+    length_in_steps: 1
+    lane: 3
+  - step: 169
+    length_in_steps: 1
+    lane: 2
+  - step: 170
+    length_in_steps: 1
+    lane: 1
+  - step: 171
+    length_in_steps: 2
+    lane: 0
+  - step: 173
+    length_in_steps: 2
+    lane: 1
+  - step: 176
+    length_in_steps: 2
+    lane: 2
+  - step: 178
+    length_in_steps: 2
+    lane: 1
+  - step: 180
+    length_in_steps: 1
+    lane: 3
+  - step: 181
+    length_in_steps: 1
+    lane: 2
+  - step: 183
+    length_in_steps: 2
     lane: 1
