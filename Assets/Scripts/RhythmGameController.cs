@@ -16,11 +16,12 @@ public class RhythmGameController : MonoBehaviour
     [Header("エフェクト")]
     public GameObject ExcellentEffectPrefab;
     public GameObject GoodEffectPrefab;
+    public GameObject[] LineEffectPrefabs;
 
     [Header("ゲーム設定")]
-    public float NoteSpeed = 10f; 
+    public float NoteSpeed = 10f;
     public float SpawnY = 10f;       // ノーツが生成されるY座標
-    public float JudgementY = -3f;   // 判定ラインのY座標 
+    public float JudgeY = -3f;   // 判定ラインのY座標 
 
     [Header("判定設定")]
     /// <summary>
@@ -75,8 +76,14 @@ public class RhythmGameController : MonoBehaviour
     {
         if (CurrentBeatmap == null)
         {
-            Debug.LogError("譜面が設定されていません。");
+            Debug.LogError("譜面が設定されていません");
             return;
+        }
+
+        // 判定ラインのエフェクトを非アクティブ化
+        for(int i = 0; i < LineEffectPrefabs.Length; i++)
+        {
+            LineEffectPrefabs[i].SetActive(false);
         }
 
         // 4レーン分のキューを初期化
@@ -93,7 +100,7 @@ public class RhythmGameController : MonoBehaviour
         BGMSource.clip = CurrentBeatmap.audioClip;
 
         // ノーツが判定ラインに着くまでの移動時間を計算
-        float distance = SpawnY - JudgementY;
+        float distance = SpawnY - JudgeY;
         noteTravelTimeInSeconds = (double)distance / NoteSpeed;
 
         // 譜面データを時間順にソートしておく
@@ -114,7 +121,7 @@ public class RhythmGameController : MonoBehaviour
             }
             return;
         }
-        
+
         // 現在の音楽再生時間を取得
         gameTime = BGMSource.time;
 
@@ -203,6 +210,9 @@ public class RhythmGameController : MonoBehaviour
     /// <param name="laneIndex">判定するレーン番号 (0-3)</param>
     private void CheckHit(int laneIndex)
     {
+        // ノーツの有無にかかわらず判定ラインを光らせる
+        SpawnLaneEffect(laneIndex, true);
+
         // そのレーンに判定すべきノーツが存在するか
         if (laneQueues[laneIndex].Count > 0)
         {
@@ -211,13 +221,14 @@ public class RhythmGameController : MonoBehaviour
 
             //　ノーツの下端のY座標と判定ラインとの距離を計算
             float distance = Mathf.Abs(
-                note.transform.position.y - (note.transform.localScale.y / 2.0f) - JudgementY);
+                note.transform.position.y - (note.transform.localScale.y / 2.0f) - JudgeY);
 
             // 距離が許容範囲付近か
             if (distance <= hitTolerance + 1)
             {
                 // 許容範囲内なら良、それ以外なら可
-                if (distance <= hitTolerance) {
+                if (distance <= hitTolerance)
+                {
                     SpawnHitEffect(ExcellentEffectPrefab, laneIndex);
                 }
                 else
@@ -242,8 +253,8 @@ public class RhythmGameController : MonoBehaviour
             }
             else
             {
-                // 距離が遠すぎる
-                Debug.Log("BAD");
+                // // 距離が遠すぎる
+                // Debug.Log("BAD");
             }
         }
         else
@@ -258,6 +269,8 @@ public class RhythmGameController : MonoBehaviour
     /// </summary>
     private void CheckRelease(int laneIndex)
     {
+        // 判定ラインを光らせるのをやめる
+        SpawnLaneEffect(laneIndex, false);
         // そのレーンで長押し中のノーツがあるか
         if (holdingNotes[laneIndex] != null)
         {
@@ -277,7 +290,7 @@ public class RhythmGameController : MonoBehaviour
         // ノーツがdespawnYを通りすぎたにもかかわらずまだ叩かれていない
         if (laneQueues[note.Lane].Count > 0 && laneQueues[note.Lane].Peek() == note)
         {
-            Debug.Log($"MISS. Lane {note.Lane}");
+            // TODO: スコア下げるor加算しない
 
             // キューからそのノーツを削除
             laneQueues[note.Lane].Dequeue();
@@ -289,13 +302,23 @@ public class RhythmGameController : MonoBehaviour
     /// </summary>
     public void AutoRelease(int laneIndex)
     {
-        Debug.Log($"AUTO RELEASE (GOOD). Lane {laneIndex}");
+        // TODO: 高得点
 
         // 保持状態を解除
         if (holdingNotes[laneIndex] != null)
         {
             holdingNotes[laneIndex] = null;
         }
+    }
+
+    /// <summary>
+    /// キーが押されたときに判定ラインを光らせる/元に戻す
+    /// </summary>
+    /// <param name="laneIndex">光らせるレーン</param>
+    /// <param name="isTrigger">光らせる/元に戻す</param>
+    private void SpawnLaneEffect(int laneIndex, bool isTrigger)
+    {
+        LineEffectPrefabs[laneIndex].SetActive(isTrigger);
     }
 
     /// <summary>
@@ -307,6 +330,6 @@ public class RhythmGameController : MonoBehaviour
     {
         // 判定ラインの座標にエフェクトを生成
         Instantiate(prefab,
-            new Vector3(LaneXPositions[laneIndex], JudgementY, 0), Quaternion.identity);
+            new Vector3(LaneXPositions[laneIndex], JudgeY, 0), Quaternion.identity);
     }
 }

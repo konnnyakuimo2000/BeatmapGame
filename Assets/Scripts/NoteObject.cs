@@ -62,7 +62,7 @@ public class NoteObject : MonoBehaviour
         }
 
         // 押さえられていてかつノーツの上端が判定ラインを通過したら
-        if (isHolding && noteTopY < Controller.JudgementY)
+        if (isHolding && noteTopY < Controller.JudgeY)
         {
             // 成功として自動で消滅
             Controller.AutoRelease(Lane);
