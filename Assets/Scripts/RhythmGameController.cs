@@ -115,19 +115,14 @@ public class RhythmGameController : MonoBehaviour
 
         gameTime = 0;
         nextNoteIndex = 0;
+
+        // ゲームを開始する
+        Invoke(nameof(GameStart), 5.0f);
     }
 
     void Update()
     {
-        if (!isGameStarted)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                isGameStarted = true;
-                BGMSource.Play();
-            }
-            return;
-        }
+        if (!isGameStarted) return;
 
         // 現在の音楽再生時間を取得
         gameTime = BGMSource.time;
@@ -162,6 +157,15 @@ public class RhythmGameController : MonoBehaviour
                 CheckRelease(i);
             }
         }
+    }
+
+    /// <summary>
+    /// ゲームが開始するInvoke関数
+    /// </summary>
+    private void GameStart()
+    {
+        isGameStarted = true;
+        BGMSource.Play();
     }
 
     /// <summary>
