@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f8ee9dbbbeecf944b6ae2f317b30eab, type: 3}
   m_Name: CoconutMall
   m_EditorClassIdentifier: 
+  title: Coconuts Mall
   audioClip: {fileID: 8300000, guid: 77e2e2ca5ec527843bee68fbd33f444b, type: 3}
   bpm: 132
   beatsPerMeasure: 4

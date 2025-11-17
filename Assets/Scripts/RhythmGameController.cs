@@ -13,6 +13,7 @@ public class RhythmGameController : MonoBehaviour
     [Header("オブジェクト参照")]
     public AudioSource BGMSource;
     public GameObject NotePrefab;
+    public TextMeshProUGUI TitleText;
     public TextMeshProUGUI ScoreText;
 
     [Header("エフェクト")]
@@ -79,6 +80,9 @@ public class RhythmGameController : MonoBehaviour
     /// </summary>
     private int score = 0;
 
+    private int excellentScore = 100;
+    private int goodScore = 50;
+
     void Start()
     {
         if (CurrentBeatmap == null)
@@ -116,7 +120,10 @@ public class RhythmGameController : MonoBehaviour
         gameTime = 0;
         nextNoteIndex = 0;
 
-        // ゲームを開始する
+        // 曲のタイトル表示を設定する
+        TitleText.text = CurrentBeatmap.title;
+
+        // タイトル表示後、ゲームを開始する
         Invoke(nameof(GameStart), 5.0f);
     }
 
@@ -237,16 +244,16 @@ public class RhythmGameController : MonoBehaviour
             // 距離が許容範囲付近か
             if (distance <= hitTolerance + 1)
             {
-                // 許容範囲内なら良、それ以外なら可
+                // 許容範囲内ならExcellent、それ以外ならGood
                 if (distance <= hitTolerance)
                 {
                     SpawnHitEffect(ExcellentEffectPrefab, laneIndex);
-                    AddScore(100);
+                    AddScore(excellentScore);
                 }
                 else
                 {
                     SpawnHitEffect(GoodEffectPrefab, laneIndex);
-                    AddScore(50);
+                    AddScore(goodScore);
                 }
 
                 // キューからノーツを削除

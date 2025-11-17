@@ -5,6 +5,7 @@ using UnityEngine;
 public class Beatmap : ScriptableObject
 {
     [Header("曲の基本設定")]
+    public string title;
     public AudioClip audioClip;
     public double bpm = 140.0;
     public int beatsPerMeasure = 4; // 拍子 (4/4なら 4)
