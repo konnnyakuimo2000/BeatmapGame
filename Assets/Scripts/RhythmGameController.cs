@@ -15,6 +15,10 @@ public class RhythmGameController : MonoBehaviour
     public GameObject NotePrefab;
     public TextMeshProUGUI TitleText;
     public TextMeshProUGUI ScoreText;
+    public GameObject ResultCanvas;
+    public TextMeshProUGUI ExcellentText;
+    public TextMeshProUGUI GoodText;
+    public TextMeshProUGUI BadText;
 
     [Header("エフェクト")]
     public GameObject ExcellentEffectPrefab;
@@ -82,6 +86,10 @@ public class RhythmGameController : MonoBehaviour
 
     private int excellentScore = 100;
     private int goodScore = 50;
+    private int longBonusScore = 30;
+    private int excellentNum = 0;
+    private int goodNum = 0;
+    private int badNum = 0;
 
     void Start()
     {
@@ -96,6 +104,9 @@ public class RhythmGameController : MonoBehaviour
         {
             LineEffectPrefabs[i].SetActive(false);
         }
+
+        // リザルト画面を非アクティブ化
+        ResultCanvas.SetActive(false);
 
         // 4レーン分のキューを初期化
         for (int i = 0; i < LaneXPositions.Length; i++)
@@ -130,6 +141,26 @@ public class RhythmGameController : MonoBehaviour
     void Update()
     {
         if (!isGameStarted) return;
+
+        // 曲が終わった時
+        if (!BGMSource.isPlaying)
+        {
+            isGameStarted = false;
+            ResultCanvas.SetActive(true);
+
+            // 集計結果を表示
+            ExcellentText.text = $"Excellent: {excellentNum}";
+            GoodText.text = $"Good: {goodNum}";
+            BadText.text = $"Bad: {badNum}";
+
+            return;
+        }
+
+        // デバッグ処理 (一時的にQキーで曲が終わる)
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            BGMSource.Stop();
+        }
 
         // 現在の音楽再生時間を取得
         gameTime = BGMSource.time;
@@ -249,11 +280,13 @@ public class RhythmGameController : MonoBehaviour
                 {
                     SpawnHitEffect(ExcellentEffectPrefab, laneIndex);
                     AddScore(excellentScore);
+                    excellentNum++;
                 }
                 else
                 {
                     SpawnHitEffect(GoodEffectPrefab, laneIndex);
                     AddScore(goodScore);
+                    goodNum++;
                 }
 
                 // キューからノーツを削除
@@ -273,14 +306,13 @@ public class RhythmGameController : MonoBehaviour
             }
             else
             {
-                // // 距離が遠すぎる
-                // Debug.Log("BAD");
+                // 距離が遠すぎる
+                badNum++;
             }
         }
         else
         {
             // そのレーンにノーツがなかった
-            // Debug.Log($"EMPTY. Lane {laneIndex}");
         }
     }
 
@@ -322,7 +354,8 @@ public class RhythmGameController : MonoBehaviour
     /// </summary>
     public void AutoRelease(int laneIndex)
     {
-        // TODO: 高得点
+        // ボーナス点を与える
+        AddScore(longBonusScore);
 
         // 保持状態を解除
         if (holdingNotes[laneIndex] != null)
