@@ -21,15 +21,53 @@ public class BeatmapEditorWindow : EditorWindow
     private NoteData selectedNoteForResize = null; // 現在リサイズ中のノーツ
     private bool isResizing = false;
 
+    private GameObject previewAudioObj;
+    private AudioSource previewAudioSource;
+    private bool isPlaying = false;
+
     [MenuItem("Window/Beatmap Editor")]
     public static void ShowWindow()
     {
         GetWindow<BeatmapEditorWindow>("Beatmap Editor");
     }
 
+    void OnEnable()
+    {
+        // エディタ用の隠しオブジェクトを作成してAudioSourceを持たせる
+        if (previewAudioObj == null)
+        {
+            previewAudioObj = EditorUtility.CreateGameObjectWithHideFlags("Audio Preview", HideFlags.HideAndDontSave, typeof(AudioSource));
+            previewAudioSource = previewAudioObj.GetComponent<AudioSource>();
+        }
+    }
+
+    void OnDisable()
+    {
+        // ウィンドウを閉じる時に隠しオブジェクトを破棄 (メモリリーク防止)
+        if (previewAudioObj != null)
+        {
+            DestroyImmediate(previewAudioObj);
+        }
+    }
+
+    void Update()
+    {
+        // 再生中は画面を毎フレーム更新して、赤線を滑らかに動かす
+        if (isPlaying && previewAudioSource != null && previewAudioSource.isPlaying)
+        {
+            Repaint();
+        }
+        else if (isPlaying && previewAudioSource != null && !previewAudioSource.isPlaying)
+        {
+            // 曲が終わったら停止状態にする
+            isPlaying = false;
+            Repaint();
+        }
+    }
+
     void OnGUI()
     {
-        // 1. 編集対象の譜面アセットを選択
+        // 編集対象の譜面アセットを選択
         currentBeatmap = (Beatmap)EditorGUILayout.ObjectField("編集する譜面", currentBeatmap, typeof(Beatmap), false);
 
         if (currentBeatmap == null)
@@ -41,13 +79,16 @@ public class BeatmapEditorWindow : EditorWindow
         // Undoを記録 (これがないとCtrl+Zが効かない)
         Undo.RecordObject(currentBeatmap, "Beatmap Editor Change");
 
-        // 2. 曲の設定（ScriptableObjectの値を直接編集）
+        // 曲の設定（ScriptableObjectの値を直接編集）
         DrawSettingsPanel();
 
-        // 3. タイムライン領域
+        // 再生コントロール
+        DrawAudioControls();
+
+        // タイムライン領域
         EditorGUILayout.LabelField("タイムライン", EditorStyles.boldLabel);
         
-        // --- スクロールビューの定義 ---
+        // スクロールビューの定義
         // (横幅: 可変, 高さ: 4レーン分 + スクロールバーの余白)
         Rect viewRect = GUILayoutUtility.GetRect(position.width - 20, LANE_HEIGHT * NUM_LANES + 20, GUILayout.ExpandWidth(true));
         // (コンテンツの総サイズ: 1000ステップ分, 4レーン分)
@@ -63,6 +104,9 @@ public class BeatmapEditorWindow : EditorWindow
 
         // --- 小節番号を描画 ---
         DrawMeasureNumbers(contentRect);
+
+        // 再生位置の赤線
+        DrawPlaybackLine(contentRect);
         
         // --- マウス操作の処理 ---
         HandleMouseInput(contentRect);
@@ -86,6 +130,86 @@ public class BeatmapEditorWindow : EditorWindow
         currentBeatmap.beatsPerMeasure = EditorGUILayout.IntField("拍子(X/4)", currentBeatmap.beatsPerMeasure);
         currentBeatmap.stepsPerMeasure = EditorGUILayout.IntField("1小節の最大分割数", currentBeatmap.stepsPerMeasure);
         currentBeatmap.firstBeatOffsetSec = EditorGUILayout.DoubleField("オフセット(秒)", currentBeatmap.firstBeatOffsetSec);
+    }
+
+    // 再生・停止ボタンの描画
+    void DrawAudioControls()
+    {
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button(isPlaying ? "Stop" : "Play Music", GUILayout.Height(30)))
+        {
+            if (isPlaying)
+            {
+                StopMusic();
+            }
+            else
+            {
+                PlayMusic();
+            }
+        }
+        
+        // 現在時刻の表示
+        if(previewAudioSource != null && previewAudioSource.clip != null)
+        {
+            string timeStr = string.Format("{0:00}:{1:00}", (int)previewAudioSource.time / 60, (int)previewAudioSource.time % 60);
+            EditorGUILayout.LabelField($"Time: {timeStr} / {previewAudioSource.clip.length:0.0}s", GUILayout.Width(150));
+        }
+        EditorGUILayout.EndHorizontal();
+    }
+
+    void PlayMusic()
+    {
+        if (currentBeatmap.audioClip == null || previewAudioSource == null) return;
+
+        previewAudioSource.clip = currentBeatmap.audioClip;
+        previewAudioSource.Play();
+        isPlaying = true;
+    }
+
+    void StopMusic()
+    {
+        if (previewAudioSource == null) return;
+        previewAudioSource.Stop();
+        previewAudioSource.time = 0; // 停止時は最初に戻る（一時停止挙動にしたい場合はここを削除）
+        isPlaying = false;
+    }
+
+    // 赤い再生ラインの描画
+    void DrawPlaybackLine(Rect contentRect)
+    {
+        if (previewAudioSource == null || currentBeatmap.bpm <= 0) return;
+
+        // 現在の再生時間
+        float currentTime = previewAudioSource.time;
+        
+        // 時間をX座標に変換
+        // 1ステップあたりの秒数
+        double secondsPerStep = BeatmapUtility.GetSecondsPerStep(currentBeatmap.bpm, currentBeatmap.beatsPerMeasure, currentBeatmap.stepsPerMeasure);
+        
+        // オフセットを考慮した相対時間
+        double relativeTime = currentTime - currentBeatmap.firstBeatOffsetSec;
+        if (relativeTime < 0) relativeTime = 0;
+
+        // 現在のステップ数（小数を含む正確な値）
+        double currentStep = relativeTime / secondsPerStep;
+
+        // X座標
+        float x = (float)(currentStep * STEP_WIDTH);
+
+        // 赤線を描画
+        Handles.color = Color.red;
+        Handles.DrawLine(new Vector3(x, contentRect.y), new Vector3(x, contentRect.y + contentRect.height));
+        
+        // 再生中は自動スクロールさせる（オプション）
+        if (isPlaying)
+        {
+            // 画面の中心に来るようにスクロール
+            float centerOffset = position.width / 2f;
+            if (x > centerOffset)
+            {
+                scrollPosition.x = x - centerOffset;
+            }
+        }
     }
 
     // 背景グリッドの描画
