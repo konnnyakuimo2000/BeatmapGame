@@ -136,23 +136,41 @@ public class BeatmapEditorWindow : EditorWindow
     void DrawAudioControls()
     {
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button(isPlaying ? "Stop" : "Play Music", GUILayout.Height(30)))
+
+        // 5秒戻るボタン
+        if (GUILayout.Button("<< -5s", GUILayout.Height(30), GUILayout.Width(60)))
+        {
+            Seek(-5.0f);
+        }
+
+        // 再生/一時停止ボタン
+        // ラベルを "Play Music" / "Stop" から "Play" / "Pause" に変更
+        if (GUILayout.Button(isPlaying ? "Pause" : "Play", GUILayout.Height(30)))
         {
             if (isPlaying)
             {
-                StopMusic();
+                PauseMusic(); // StopMusicから変更
             }
             else
             {
                 PlayMusic();
             }
         }
+
+        // 5秒進むボタン
+        if (GUILayout.Button("+5s >>", GUILayout.Height(30), GUILayout.Width(60)))
+        {
+            Seek(5.0f);
+        }
         
         // 現在時刻の表示
         if(previewAudioSource != null && previewAudioSource.clip != null)
         {
-            string timeStr = string.Format("{0:00}:{1:00}", (int)previewAudioSource.time / 60, (int)previewAudioSource.time % 60);
-            EditorGUILayout.LabelField($"Time: {timeStr} / {previewAudioSource.clip.length:0.0}s", GUILayout.Width(150));
+            // 分:秒 形式で表示
+            string currentTimeStr = string.Format("{0:00}:{1:00}", (int)previewAudioSource.time / 60, (int)previewAudioSource.time % 60);
+            string totalTimeStr = string.Format("{0:00}:{1:00}", (int)previewAudioSource.clip.length / 60, (int)previewAudioSource.clip.length % 60);
+            
+            EditorGUILayout.LabelField($"Time: {currentTimeStr} / {totalTimeStr}", GUILayout.Width(150));
         }
         EditorGUILayout.EndHorizontal();
     }
@@ -162,16 +180,39 @@ public class BeatmapEditorWindow : EditorWindow
         if (currentBeatmap.audioClip == null || previewAudioSource == null) return;
 
         previewAudioSource.clip = currentBeatmap.audioClip;
+        
+        // もし曲が最後まで再生されていたら、最初に戻してから再生する
+        if (Mathf.Approximately(previewAudioSource.time, previewAudioSource.clip.length))
+        {
+            previewAudioSource.time = 0;
+        }
+
         previewAudioSource.Play();
         isPlaying = true;
     }
 
-    void StopMusic()
+    void PauseMusic()
     {
         if (previewAudioSource == null) return;
-        previewAudioSource.Stop();
-        previewAudioSource.time = 0; // 停止時は最初に戻る（一時停止挙動にしたい場合はここを削除）
+        
+        previewAudioSource.Pause(); // Stop() ではなく Pause() を使う
+        
+        // previewAudioSource.time = 0; // ← この行を削除（最初に戻さない）
+        
         isPlaying = false;
+    }
+
+    // 時間を移動する関数
+    void Seek(float delta)
+    {
+        if (previewAudioSource == null || previewAudioSource.clip == null) return;
+
+        // 時間を加算・減算し、0 ～ 曲の長さ の範囲に収める
+        float newTime = previewAudioSource.time + delta;
+        previewAudioSource.time = Mathf.Clamp(newTime, 0f, previewAudioSource.clip.length);
+
+        // 画面更新（赤線を即座に移動させるため）
+        Repaint();
     }
 
     // 赤い再生ラインの描画
