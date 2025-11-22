@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RhythmGameController : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class RhythmGameController : MonoBehaviour
     public TextMeshProUGUI GamingTitle;
     public TextMeshProUGUI GamingScore;
     public TextMeshProUGUI ComboText;
+    public Image FadePanel;
     public GameObject ResultCanvas;
     public TextMeshProUGUI ResultTitle;
     public TextMeshProUGUI ResultScore;
@@ -119,6 +121,9 @@ public class RhythmGameController : MonoBehaviour
         {
             LineEffectPrefabs[i].SetActive(false);
         }
+
+        // フェードアウト用のマスクを透明化
+        FadePanel.color = new Color(0, 0, 0, 0);
 
         // リザルト要素を非アクティブ化（タイトルとヘッダー以外）
         for (int i = 2; i < ResultCanvas.transform.childCount; i++) 
@@ -461,8 +466,22 @@ public class RhythmGameController : MonoBehaviour
 
         // ゲームUIの非表示
         GamingScore.gameObject.SetActive(false);
+        ComboText.gameObject.SetActive(false);
 
-        // TODO:画面がちょっと暗くなる
+        // 画面をフェードアウトさせて暗くする
+        float time = 0f;
+        Color startColor = new Color(0, 0, 0, 0);
+        Color endColor = new Color(0, 0, 0, 0.7f);
+        while (time < 2.0f)
+        {
+            time += Time.deltaTime;
+            float alpha = time / 2.0f;
+            
+            // マスクの不透過度を少しずつ上げる
+            FadePanel.color = Color.Lerp(startColor, endColor, alpha);
+            
+            yield return null;
+        }
         yield return new WaitForSeconds(1.0f);
 
         // リザルトUIの表示
