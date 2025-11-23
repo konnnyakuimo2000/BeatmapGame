@@ -10,7 +10,7 @@ public class RhythmGameController : MonoBehaviour
     public Beatmap CurrentBeatmap;
 
     [Header("レーン設定")]
-    public float[] LaneXPositions = new float[] { -1.5f, -0.5f, 0.5f, 1.5f };
+    public float[] LaneXPositions = new float[] { -3.0f, -1.0f, 1.0f, 3.0f };
 
     [Header("オブジェクト参照")]
     public AudioSource BGMSource;
