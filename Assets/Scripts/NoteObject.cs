@@ -89,7 +89,6 @@ public class NoteObject : MonoBehaviour
 
         // 色を濃くする
         Color.RGBToHSV(objRenderer.material.color, out float h, out float s, out float v);
-        Debug.Log(s);
         objRenderer.material.color = Color.HSVToRGB(h, s + 0.4f, v);
     }
 }

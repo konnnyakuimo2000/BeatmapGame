@@ -126,7 +126,7 @@ public class RhythmGameController : MonoBehaviour
         FadePanel.color = new Color(0, 0, 0, 0);
 
         // リザルト要素を非アクティブ化（タイトルとヘッダー以外）
-        for (int i = 2; i < ResultCanvas.transform.childCount; i++) 
+        for (int i = 6; i < ResultCanvas.transform.childCount; i++) 
         {
             ResultCanvas.transform.GetChild(i).gameObject.SetActive(false);
         }
@@ -349,7 +349,7 @@ public class RhythmGameController : MonoBehaviour
                 if (combo > 2)
                 {
                     ComboText.gameObject.SetActive(true);
-                    ComboText.text = $"{combo}combo!";
+                    ComboText.text = $"{combo}コンボ!";
                 } 
 
                 // 長押しノーツ
@@ -459,10 +459,10 @@ public class RhythmGameController : MonoBehaviour
         // 集計結果の代入
         ResultTitle.text = CurrentBeatmap.title;
         ResultScore.text = score.ToString();
-        ExcellentText.text = $"Excellent: {excellentNum}";
-        GoodText.text = $"Good: {goodNum}";
-        BadText.text = $"Bad: {badNum}";
-        MaxComboText.text = $"Max combo bonus: {maxCombo}";
+        ExcellentText.text = excellentNum.ToString();
+        GoodText.text = goodNum.ToString();
+        BadText.text = badNum.ToString();
+        MaxComboText.text = maxCombo.ToString();
 
         // ゲームUIの非表示
         GamingScore.gameObject.SetActive(false);
