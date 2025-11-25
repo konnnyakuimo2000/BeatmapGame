@@ -6,7 +6,7 @@ public class NoteObject : MonoBehaviour
     /// <summary>
     /// 消える位置
     /// </summary>
-    private float DespawnY = -5f;
+    private float DespawnZ = -5f;
 
     /// <summary>
     /// 速さ
@@ -45,14 +45,14 @@ public class NoteObject : MonoBehaviour
     }
     void Update()
     {
-        // 下に移動
-        transform.Translate(Vector3.down * Speed * Time.deltaTime);
+        // 奥から手前に移動
+        transform.Translate(Vector3.back * Speed * Time.deltaTime, Space.World);
 
-        // ノーツの上端のY座標を計算
-        float noteTopY = transform.position.y + (transform.localScale.y / 2.0f);
+        // ノーツの上端のZ座標を計算
+        float noteFrontZ = transform.position.z + (transform.localScale.z / 2.0f);
 
         // 画面外に出たら自身を破棄する
-        if (noteTopY < DespawnY)
+        if (noteFrontZ < DespawnZ)
         {
             if (Controller != null && !isHolding)
             {
@@ -62,7 +62,7 @@ public class NoteObject : MonoBehaviour
         }
 
         // 押さえられていてかつノーツの上端が判定ラインを通過したら
-        if (isHolding && noteTopY < Controller.JudgeY)
+        if (isHolding && noteFrontZ < Controller.JudgeZ)
         {
             // 成功として自動で消滅
             Controller.AutoRelease(Lane);

@@ -37,8 +37,8 @@ public class RhythmGameController : MonoBehaviour
 
     [Header("ゲーム設定")]
     public float NoteSpeed = 10f;
-    public float SpawnY = 10f;       // ノーツが生成されるY座標
-    public float JudgeY = -3f;   // 判定ラインのY座標 
+    public float SpawnZ = 50f;       // ノーツが生成されるZ座標
+    public float JudgeZ = -3f;   // 判定ラインのZ座標 
 
     [Header("判定設定")]
     /// <summary>
@@ -117,7 +117,7 @@ public class RhythmGameController : MonoBehaviour
         }
 
         // 判定ラインのエフェクトを非アクティブ化
-        for(int i = 0; i < LineEffectPrefabs.Length; i++)
+        for (int i = 0; i < LineEffectPrefabs.Length; i++)
         {
             LineEffectPrefabs[i].SetActive(false);
         }
@@ -126,7 +126,7 @@ public class RhythmGameController : MonoBehaviour
         FadePanel.color = new Color(0, 0, 0, 0);
 
         // リザルト要素を非アクティブ化（タイトルとヘッダー以外）
-        for (int i = 6; i < ResultCanvas.transform.childCount; i++) 
+        for (int i = 6; i < ResultCanvas.transform.childCount; i++)
         {
             ResultCanvas.transform.GetChild(i).gameObject.SetActive(false);
         }
@@ -151,7 +151,7 @@ public class RhythmGameController : MonoBehaviour
         BGMSource.clip = CurrentBeatmap.audioClip;
 
         // ノーツが判定ラインに着くまでの移動時間を計算
-        float distance = SpawnY - JudgeY;
+        float distance = SpawnZ - JudgeZ;
         noteTravelTimeInSeconds = (double)distance / NoteSpeed;
 
         // 譜面データを時間順にソートしておく
@@ -270,16 +270,16 @@ public class RhythmGameController : MonoBehaviour
 
         // この時点で生成時刻を過ぎているので、どの程度移動させてからスポーンすべきかを計算
         // 本来スポーンすべきだったオブジェクトの中心Y座標
-        float baseCenterY = SpawnY + (noteLengthInUnits / 2f);
+        float baseCenterZ = SpawnZ + (noteLengthInUnits / 2f);
 
         // 遅れた時間の分だけ、下に移動させる
         float distanceToMove = NoteSpeed * (float)timeSinceSpawn;
 
         // 最終的な座標
-        Vector3 spawnPos = new Vector3(LaneXPositions[noteData.lane], baseCenterY - distanceToMove, 0);
+        Vector3 spawnPos = new Vector3(LaneXPositions[noteData.lane], 0, baseCenterZ - distanceToMove);
 
         // Prefabをインスタンス化
-        GameObject noteObj = Instantiate(NotePrefab, spawnPos, Quaternion.identity);
+        GameObject noteObj = Instantiate(NotePrefab, spawnPos, Quaternion.Euler(90, 0, 0));
 
         // NoteObject スクリプトのコンポーネントを取得
         NoteObject noteScript = noteObj.GetComponent<NoteObject>();
@@ -319,7 +319,7 @@ public class RhythmGameController : MonoBehaviour
 
             //　ノーツの下端のY座標と判定ラインとの距離を計算
             float distance = Mathf.Abs(
-                note.transform.position.y - (note.transform.localScale.y / 2.0f) - JudgeY);
+                note.transform.position.z - (note.transform.localScale.y / 2.0f) - JudgeZ);
 
             // 距離が許容範囲付近か
             if (distance <= hitTolerance + 1)
@@ -350,7 +350,7 @@ public class RhythmGameController : MonoBehaviour
                 {
                     ComboText.gameObject.SetActive(true);
                     ComboText.text = $"{combo}コンボ!";
-                } 
+                }
 
                 // 長押しノーツ
                 if (note.IsLongNote)
@@ -437,7 +437,7 @@ public class RhythmGameController : MonoBehaviour
     {
         // 判定ラインの座標にエフェクトを生成
         Instantiate(prefab,
-            new Vector3(LaneXPositions[laneIndex], JudgeY, 0), Quaternion.identity);
+            new Vector3(LaneXPositions[laneIndex], 0, JudgeZ), Quaternion.Euler(90.0f, 0, 0));
     }
 
     /// <summary>
@@ -476,10 +476,10 @@ public class RhythmGameController : MonoBehaviour
         {
             time += Time.deltaTime;
             float alpha = time / 2.0f;
-            
+
             // マスクの不透過度を少しずつ上げる
             FadePanel.color = Color.Lerp(startColor, endColor, alpha);
-            
+
             yield return null;
         }
         yield return new WaitForSeconds(1.0f);
