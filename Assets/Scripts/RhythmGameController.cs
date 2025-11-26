@@ -47,6 +47,11 @@ public class RhythmGameController : MonoBehaviour
     public float hitTolerance = 0.5f;
 
     /// <summary>
+    /// シーン間で選択された曲を渡す
+    /// </summary>
+    public static Beatmap SelectedBeatmap;
+
+    /// <summary>
     /// 判定に使用するキー
     /// </summary>
     /// <value>キーボード左順での配列</value>
@@ -110,6 +115,11 @@ public class RhythmGameController : MonoBehaviour
 
     void Start()
     {
+        if (SelectedBeatmap != null)
+        {
+            CurrentBeatmap = SelectedBeatmap;
+        }
+        
         if (CurrentBeatmap == null)
         {
             Debug.LogError("譜面が設定されていません");
