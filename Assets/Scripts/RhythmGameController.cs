@@ -46,10 +46,18 @@ public class RhythmGameController : MonoBehaviour
     /// </summary>
     public float hitTolerance = 0.5f;
 
+    [Header("SE設定")]
+    public AudioClip[] SEClips;
+
     /// <summary>
     /// シーン間で選択された曲を渡す
     /// </summary>
     public static Beatmap SelectedBeatmap;
+
+    /// <summary>
+    /// シーン間で選択されたノーツSEを渡す
+    /// </summary>
+    public static int SelectedSeIndex = 0;
 
     /// <summary>
     /// 判定に使用するキー
@@ -334,6 +342,9 @@ public class RhythmGameController : MonoBehaviour
             // 距離が許容範囲付近か
             if (distance <= hitTolerance + 1)
             {
+                // SEを鳴らす
+                BGMSource.PlayOneShot(SEClips[SelectedSeIndex]);
+
                 // 許容範囲内ならExcellent、それ以外ならGood
                 if (distance <= hitTolerance)
                 {
