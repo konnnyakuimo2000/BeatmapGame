@@ -17,10 +17,19 @@ public class TitleManager : MonoBehaviour
     public GameObject musicButtonPrefab;
     public Beatmap[] beatmaps;
 
+    [Header("SE設定")]
+    public TextMeshProUGUI SEText;
+    public Button SELeftButton;
+    public Button SERightButton;
+    public AudioClip[] SEClips;
+    public string[] SENames;
+
     private TextMeshProUGUI instructionText;
     private float flashSpeed = 2.0f;
     private List<Button> musicButtons = new List<Button>();
     private int currentSelectionIndex = 0;
+    private int currentSEIndex = 0;
+    private AudioSource previewSource;
 
     void Start()
     {
@@ -33,6 +42,16 @@ public class TitleManager : MonoBehaviour
 
         // 変数割り当て
         instructionText = Instruction.GetComponent<TextMeshProUGUI>();
+
+        // プレビュー用のAudioSourceを作成
+        previewSource = gameObject.AddComponent<AudioSource>();
+
+        // ボタンにクリックイベントを登録
+        SELeftButton.onClick.AddListener(() => ChangeSE(-1));
+        SERightButton.onClick.AddListener(() => ChangeSE(1));
+
+        // SE名の表示を更新
+        SEText.text = SENames[currentSEIndex];
     }
 
     void Update()
@@ -71,7 +90,7 @@ public class TitleManager : MonoBehaviour
         else if (StartPanel.activeSelf)
         {
             // 上移動
-            if (Input.GetKeyDown(KeyCode.W))
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             {
                 currentSelectionIndex--;
                 if (currentSelectionIndex < 0) currentSelectionIndex = 0;
@@ -79,7 +98,7 @@ public class TitleManager : MonoBehaviour
             }
 
             // 下移動
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.S)|| Input.GetKeyDown(KeyCode.DownArrow))
             {
                 currentSelectionIndex++;
                 if (currentSelectionIndex >= musicButtons.Count) currentSelectionIndex = musicButtons.Count - 1;
@@ -107,14 +126,36 @@ public class TitleManager : MonoBehaviour
         // 設定パネルが開いている時
         else if (SettingPanel.activeSelf)
         {
-            // BackSpaceで戻る
-            if (Input.GetKeyDown(KeyCode.Backspace))
+            // A, DでSE切替
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) ChangeSE(-1);
+            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) ChangeSE(1);
+
+            // Enterキーで戻る(TODO:設定項目が２個以上あるなら一個下に行く。最下なら戻る)
+            if (Input.GetKeyDown(KeyCode.Return))
             {
                 StartPanel.SetActive(false);
                 SettingPanel.SetActive(false);
                 Instruction.SetActive(true);
             }       
         }
+    }
+
+    // SEを変更する関数
+    public void ChangeSE(int direction)
+    {
+        if (SEClips == null || SEClips.Length == 0) return;
+
+        currentSEIndex += direction;
+
+        // 範囲外になったらループさせる
+        if (currentSEIndex < 0) currentSEIndex = SEClips.Length - 1;
+        if (currentSEIndex >= SEClips.Length) currentSEIndex = 0;
+
+        // SE名の表示を更新
+        SEText.text = SENames[currentSEIndex];
+        
+        // 変更したSEをプレビュー再生
+        previewSource.PlayOneShot(SEClips[currentSEIndex]);
     }
 
     // 譜面リストからボタンを生成する
@@ -202,6 +243,9 @@ public class TitleManager : MonoBehaviour
     {
         // 選んだ曲を静的変数に保存
         RhythmGameController.SelectedBeatmap = beatmap;
+
+        // 選んだSEの番号も静的変数に保存
+        RhythmGameController.SelectedSeIndex = currentSEIndex;
 
         // シーン遷移
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
