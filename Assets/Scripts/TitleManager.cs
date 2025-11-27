@@ -6,8 +6,7 @@ using TMPro;
 public class TitleManager : MonoBehaviour
 {
     [Header("UI参照")]
-    public GameObject StartButton;
-    public GameObject SettingButton;
+    public GameObject Instruction;
     public GameObject ScrollView;
     public Transform ScrollViewContent;
     public GameObject SettingPanel;
@@ -16,32 +15,53 @@ public class TitleManager : MonoBehaviour
     public GameObject musicButtonPrefab;
     public Beatmap[] beatmaps;
 
+    private TextMeshProUGUI instructionText;
+    private float flashSpeed = 2.0f;
+
     void Start()
     {
         // 表示/非表示
         ScrollView.SetActive(false);
-        StartButton.SetActive(true);
+        SettingPanel.SetActive(false);
 
         // 曲リストの生成
         GenerateMusicList();
+
+        // 変数割り当て
+        instructionText = Instruction.GetComponent<TextMeshProUGUI>();
     }
 
-    // はじめるボタン押下時
-    public void OnStartButtonDown()
+    void Update()
     {
-        StartButton.SetActive(false);
-        SettingButton.SetActive(false);
-
-        ScrollView.SetActive(true);
-    }
-
-    // 設定ボタン押下時
-    public void OnSettingButtonDown()
-    {
-        StartButton.SetActive(false);
-        SettingButton.SetActive(false);
+        // 指示文を点滅させる
+        if (Instruction.activeSelf)
+        {
+            float alpha = Mathf.Sin(Time.time * flashSpeed) * 0.5f + 0.5f;
+            instructionText.color = new Color (instructionText.color.r, instructionText.color.g, instructionText.color.b, alpha);
+        }
         
-        SettingPanel.SetActive(true);
+        // Enterキーではじめる
+        if (Input.GetKeyDown(KeyCode.Return) && !ScrollView.activeSelf && !SettingPanel.activeSelf)
+        {
+            Instruction.SetActive(false);
+            ScrollView.SetActive(true);
+        }
+
+        // Escapeキーで設定
+        if (Input.GetKeyDown(KeyCode.Escape) && !ScrollView.activeSelf && !SettingPanel.activeSelf)
+        {
+            Instruction.SetActive(false);
+            SettingPanel.SetActive(true);
+        }
+
+        // BackSpaceで戻る
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            ScrollView.SetActive(false);
+            SettingPanel.SetActive(false);
+            Instruction.SetActive(true);
+        }
+
     }
 
     // 譜面リストからボタンを生成する
