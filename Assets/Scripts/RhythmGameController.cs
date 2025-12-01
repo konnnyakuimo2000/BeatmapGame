@@ -57,7 +57,17 @@ public class RhythmGameController : MonoBehaviour
     /// <summary>
     /// シーン間で選択されたノーツSEを渡す
     /// </summary>
-    public static int SelectedSeIndex = 0;
+    public static int SelectedSEIndex = 0;
+
+    /// <summary>
+    /// シーン間で保存されたSEの音量
+    /// </summary>
+    public static float SelectedSEVolume = 1.0f;
+
+    /// <summary>
+    /// シーン間で保存されたBGMの音量
+    /// </summary>
+    public static float SelectedBGMVolume = 1.0f;
 
     /// <summary>
     /// 判定に使用するキー
@@ -127,12 +137,15 @@ public class RhythmGameController : MonoBehaviour
         {
             CurrentBeatmap = SelectedBeatmap;
         }
-        
+
         if (CurrentBeatmap == null)
         {
             Debug.LogError("譜面が設定されていません");
             return;
         }
+
+        // BGMの音量を設定
+        BGMSource.volume = SelectedBGMVolume;
 
         // 判定ラインのエフェクトを非アクティブ化
         for (int i = 0; i < LineEffectPrefabs.Length; i++)
@@ -343,7 +356,7 @@ public class RhythmGameController : MonoBehaviour
             if (distance <= hitTolerance + 1)
             {
                 // SEを鳴らす
-                BGMSource.PlayOneShot(SEClips[SelectedSeIndex]);
+                BGMSource.PlayOneShot(SEClips[SelectedSEIndex], SelectedSEVolume);
 
                 // 許容範囲内ならExcellent、それ以外ならGood
                 if (distance <= hitTolerance)
