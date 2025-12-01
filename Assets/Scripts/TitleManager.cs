@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
 
 public class TitleManager : MonoBehaviour
 {
@@ -126,9 +127,21 @@ public class TitleManager : MonoBehaviour
         // 設定パネルが開いている時
         else if (SettingPanel.activeSelf)
         {
+            // そのままのSEを表示
+            ChangeSE(0);
+
             // A, DでSE切替
-            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) ChangeSE(-1);
-            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) ChangeSE(1);
+            if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) 
+            {
+                StartCoroutine(SEButton(SELeftButton));
+                ChangeSE(-1);
+            }
+
+            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                StartCoroutine(SEButton(SERightButton));
+                ChangeSE(1);
+            } 
 
             // Enterキーで戻る(TODO:設定項目が２個以上あるなら一個下に行く。最下なら戻る)
             if (Input.GetKeyDown(KeyCode.Return))
@@ -155,7 +168,33 @@ public class TitleManager : MonoBehaviour
         SEText.text = SENames[currentSEIndex];
         
         // 変更したSEをプレビュー再生
-        previewSource.PlayOneShot(SEClips[currentSEIndex]);
+        if (direction != 0) previewSource.PlayOneShot(SEClips[currentSEIndex]);
+    }
+
+    // ボタン押下時のアニメーション
+    private IEnumerator SEButton(Button btn)
+    {
+        float duration = 0.1f;
+        Vector3 pressedScale = new Vector3(0.8f, 0.8f, 1f);
+
+        // 縮む
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            btn.transform.localScale = Vector3.Lerp(Vector3.one, pressedScale, elapsed / duration);
+            yield return null;
+        }
+
+        // 戻る
+        elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            btn.transform.localScale = Vector3.Lerp(pressedScale, Vector3.one, elapsed / duration);
+            yield return null;
+        }
+        btn.transform.localScale = Vector3.one;
     }
 
     // 譜面リストからボタンを生成する
