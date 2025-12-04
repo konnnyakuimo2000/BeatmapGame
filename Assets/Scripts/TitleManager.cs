@@ -7,7 +7,8 @@ using System.Collections;
 
 public class TitleManager : MonoBehaviour
 {
-    [Header("UI参照")]
+    public GameObject BackgroundFrame;
+    [Header("オブジェクト参照")]
     public GameObject Instruction;
     public GameObject StartPanel;
     public Transform ScrollViewContent;
@@ -41,12 +42,12 @@ public class TitleManager : MonoBehaviour
     private int currentSEIndex = 0;
     private AudioSource previewSource;
     private int currentSettingRow = 0;
-    private int currentSEVolume = 5;
-    private int currentBGMVolume = 5;
+    private int currentSEVolume = 10;
+    private int currentBGMVolume = 10;
     private Image[] seVolumeBars;
     private Image[] bgmVolumeBars;
-    private Color activeColor = Color.white;
-    private Color inactiveColor = new Color(1, 1, 1, 0.2f);
+    private Color activeColor = Color.mediumSpringGreen;
+    private Color inactiveColor = new Color(1, 1, 1, 0.4f);
     private Color selectedLabelColor = Color.yellow;
     private Color normalLabelColor = Color.white;
 
@@ -74,12 +75,10 @@ public class TitleManager : MonoBehaviour
 
         // SE音量メータの初期化
         seVolumeBars = SEVolumeMeterParent.GetComponentsInChildren<Image>();
-        currentSEVolume = 5;
         UpdateSEVolumeMeter();
 
         // BGM音量メータの初期化
         bgmVolumeBars = BGMVolumeMeterParent.GetComponentsInChildren<Image>();
-        currentBGMVolume = 5;
         UpdateBGMVolumeMeter();
     }
 
@@ -95,6 +94,9 @@ public class TitleManager : MonoBehaviour
         // スタートパネルも設定パネルも開いていない時
         if (!StartPanel.activeSelf && !SettingPanel.activeSelf)
         {
+            // 背景フレームを見せる
+            BackgroundFrame.SetActive(true);
+
             // Enterキーではじめる
             if (Input.GetKeyDown(KeyCode.Return))
             {
@@ -121,6 +123,9 @@ public class TitleManager : MonoBehaviour
         // スタートパネルが開いている時
         else if (StartPanel.activeSelf)
         {
+            // 背景フレームを見せない
+            BackgroundFrame.SetActive(false);
+            
             // 上移動
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -157,7 +162,7 @@ public class TitleManager : MonoBehaviour
 
         // 設定パネルが開いている時
         else if (SettingPanel.activeSelf)
-        {
+        {            
             HandleSettingInput();
         }
     }
@@ -165,6 +170,9 @@ public class TitleManager : MonoBehaviour
     // 設定画面の入力をまとめた関数
     void HandleSettingInput()
     {
+        // 背景フレームを見せない
+        BackgroundFrame.SetActive(false);
+    
         // 項目の移動
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
