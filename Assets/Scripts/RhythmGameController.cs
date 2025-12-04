@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class RhythmGameController : MonoBehaviour
@@ -26,9 +27,7 @@ public class RhythmGameController : MonoBehaviour
     public TextMeshProUGUI GoodText;
     public TextMeshProUGUI BadText;
     public TextMeshProUGUI MaxComboText;
-    public GameObject BackButton;
-    public GameObject RetryButton;
-    public GameObject RankingButton;
+    public TextMeshProUGUI OptionText;
 
     [Header("エフェクト")]
     public GameObject ExcellentEffectPrefab;
@@ -122,6 +121,11 @@ public class RhythmGameController : MonoBehaviour
     /// </summary>
     private int score = 0;
 
+    /// <summary>
+    /// スコア表示が一通り終わったか
+    /// </summary>
+    private bool isResultShowed = false;
+
     private int excellentScore = 100;
     private int goodScore = 50;
     private int longBonusScore = 30;
@@ -200,79 +204,102 @@ public class RhythmGameController : MonoBehaviour
 
     void Update()
     {
-        if (!isGameStarted) return;
-
-        // 曲が始まっていない時
-        if (!isMusicStarted)
-        {
-            // 開始前は手動で時間を進める
-            gameTime += Time.deltaTime;
-
-            // 時間が0になったら音楽スタート
-            if (gameTime >= 0)
+        if (isGameStarted){
+            // 曲が始まっていない時
+            if (!isMusicStarted)
             {
-                BGMSource.Play();
-                isMusicStarted = true;
+                // 開始前は手動で時間を進める
+                gameTime += Time.deltaTime;
+
+                // 時間が0になったら音楽スタート
+                if (gameTime >= 0)
+                {
+                    BGMSource.Play();
+                    isMusicStarted = true;
+                }
+            }
+            // 再生中
+            else
+            {
+                // 現在の音楽再生時間を取得
+                gameTime = BGMSource.time;
+
+                // 曲が終わった時
+                if (!BGMSource.isPlaying)
+                {
+                    isGameStarted = false;
+
+                    // 最大コンボ数をそのままスコアに加算
+                    AddScore(maxCombo);
+
+                    // スコア表示コルーチンを開始
+                    StartCoroutine(ResultDisplay());
+
+                    return;
+                }
+            }
+
+            // デバッグ処理 (一時的にQキーで曲が終わる)
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                BGMSource.Stop();
+            }
+
+            if (nextNoteIndex < CurrentBeatmap.notes.Count)
+            {
+                NoteData noteToSpawn = CurrentBeatmap.notes[nextNoteIndex];
+                double noteHitTime = BeatmapUtility.GetTimeFromStep(CurrentBeatmap, noteToSpawn.step);
+                double noteSpawnTime = noteHitTime - noteTravelTimeInSeconds;
+
+                // 現在のゲーム時間が生成時間を超えたか
+                if (gameTime >= noteSpawnTime)
+                {
+                    // どれだけ超えたのかを計算しSpawnNoteに渡す
+                    SpawnNote(noteToSpawn, gameTime - noteSpawnTime);
+
+                    nextNoteIndex++; // 次のノーツへ
+                }
+            }
+
+            // ノーツへのキー入力
+            for (int i = 0; i < keys.Length; i++)
+            {
+                if (Input.GetKeyDown(keys[i]))
+                {
+                    // 対応するレーンの判定処理を呼ぶ
+                    CheckHit(i);
+
+                    // ヒットの可否に関わらずSEを鳴らす
+                    BGMSource.PlayOneShot(SEClips[SelectedSEIndex], SelectedSEVolume);
+                }
+
+                if (Input.GetKeyUp(keys[i]))
+                {
+                    CheckRelease(i);
+                }
             }
         }
-        // 再生中
         else
         {
-            // 現在の音楽再生時間を取得
-            gameTime = BGMSource.time;
-
-            // 曲が終わった時
-            if (!BGMSource.isPlaying)
+            // スコア表示後の操作受付
+            if (isResultShowed)
             {
-                isGameStarted = false;
+                // 指示文を点滅
+                float alpha = Mathf.Sin(Time.time * 3.0f) * 0.5f + 0.5f;
+                OptionText.color = new Color(OptionText.color.r, OptionText.color.g, OptionText.color.b, alpha);
 
-                // 最大コンボ数をそのままスコアに加算
-                AddScore(maxCombo);
-
-                // スコア表示コルーチンを開始
-                StartCoroutine(ResultDisplay());
-
-                return;
-            }
-        }
-
-        // デバッグ処理 (一時的にQキーで曲が終わる)
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            BGMSource.Stop();
-        }
-
-        if (nextNoteIndex < CurrentBeatmap.notes.Count)
-        {
-            NoteData noteToSpawn = CurrentBeatmap.notes[nextNoteIndex];
-            double noteHitTime = BeatmapUtility.GetTimeFromStep(CurrentBeatmap, noteToSpawn.step);
-            double noteSpawnTime = noteHitTime - noteTravelTimeInSeconds;
-
-            // 現在のゲーム時間が生成時間を超えたか
-            if (gameTime >= noteSpawnTime)
-            {
-                // どれだけ超えたのかを計算しSpawnNoteに渡す
-                SpawnNote(noteToSpawn, gameTime - noteSpawnTime);
-
-                nextNoteIndex++; // 次のノーツへ
-            }
-        }
-
-        // ノーツへのキー入力
-        for (int i = 0; i < keys.Length; i++)
-        {
-            if (Input.GetKeyDown(keys[i]))
-            {
-                // 対応するレーンの判定処理を呼ぶ
-                CheckHit(i);
-
-                // ヒットの可否に関わらずSEを鳴らす
-                BGMSource.PlayOneShot(SEClips[SelectedSEIndex], SelectedSEVolume);
-            }
-
-            if (Input.GetKeyUp(keys[i]))
-            {
-                CheckRelease(i);
+                if (Input.GetKeyDown(KeyCode.D))
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+                }
+                else if (Input.GetKeyDown(KeyCode.F))
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                }
+                else if (Input.GetKeyDown(KeyCode.J))
+                {
+                    // TODO: ランキング実装
+                }
             }
         }
     }
@@ -542,9 +569,8 @@ public class RhythmGameController : MonoBehaviour
         ResultScore.gameObject.SetActive(true);
         yield return new WaitForSeconds(1.6f);
 
-        // 各ボタンの表示
-        BackButton.SetActive(true);
-        RetryButton.SetActive(true);
-        RankingButton.SetActive(true);
+        // 進行テキストの表示
+        OptionText.gameObject.SetActive(true);
+        isResultShowed = true;
     }
 }
