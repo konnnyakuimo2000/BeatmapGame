@@ -265,6 +265,9 @@ public class RhythmGameController : MonoBehaviour
             {
                 // 対応するレーンの判定処理を呼ぶ
                 CheckHit(i);
+
+                // ヒットの可否に関わらずSEを鳴らす
+                BGMSource.PlayOneShot(SEClips[SelectedSEIndex], SelectedSEVolume);
             }
 
             if (Input.GetKeyUp(keys[i]))
@@ -355,9 +358,6 @@ public class RhythmGameController : MonoBehaviour
             // 距離が許容範囲付近か
             if (distance <= hitTolerance + 1)
             {
-                // SEを鳴らす
-                BGMSource.PlayOneShot(SEClips[SelectedSEIndex], SelectedSEVolume);
-
                 // 許容範囲内ならExcellent、それ以外ならGood
                 if (distance <= hitTolerance)
                 {
