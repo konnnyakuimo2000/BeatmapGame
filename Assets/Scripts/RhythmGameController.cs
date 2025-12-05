@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using unityroom.Api;
 
 public class RhythmGameController : MonoBehaviour
 {
@@ -298,7 +299,7 @@ public class RhythmGameController : MonoBehaviour
                 }
                 else if (Input.GetKeyDown(KeyCode.J))
                 {
-                    // TODO: ランキング実装
+                    UnityroomApiClient.Instance.SendScore(1, score, ScoreboardWriteMode.HighScoreDesc);
                 }
             }
         }
