@@ -395,7 +395,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30CE\u30FC\u30C4\u306E\u97F3"
+  m_text: "\u30CE\u30FC\u30C4\u97F3\u306E\u7A2E\u985E"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7a57d9d5dcb5d6e48b26f54d6e23baaf, type: 2}
   m_sharedMaterial: {fileID: -8839091486887523150, guid: 7a57d9d5dcb5d6e48b26f54d6e23baaf, type: 2}
@@ -535,6 +535,9 @@ MonoBehaviour:
   - "\u548C\u592A\u9F13"
   - "\u7206\u767A"
   - "\u30D4\u30B3\u30D4\u30B3"
+  StartPanelSE: {fileID: 8300000, guid: 1ada8688dc1415447b60d9d530b87375, type: 3}
+  SettingPanelSE: {fileID: 8300000, guid: fd76df713aadc6845ac39d503fc37d03, type: 3}
+  SelectSE: {fileID: 8300000, guid: 9507b6a7c473bb9449b58d8918c45f56, type: 3}
   SEVolumeLabelText: {fileID: 327741641}
   SEVolumeMeterParent: {fileID: 706071963}
   BGMVolumeLabelText: {fileID: 5453053}
@@ -1117,7 +1120,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "SE\u306E\u97F3\u91CF"
+  m_text: "\u30CE\u30FC\u30C4\u306E\u97F3\u91CF"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7a57d9d5dcb5d6e48b26f54d6e23baaf, type: 2}
   m_sharedMaterial: {fileID: -8839091486887523150, guid: 7a57d9d5dcb5d6e48b26f54d6e23baaf, type: 2}
