@@ -3054,6 +3054,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 39c457c148f75544b817ecaa6643e8c5, type: 3}
   - {fileID: 8300000, guid: e1a714e4255de754b8a8f32e8b0e507d, type: 3}
   - {fileID: 8300000, guid: 75429155a8160d644b614e554dc502d6, type: 3}
+  ScoreAttributeSE: {fileID: 8300000, guid: af3d2877b3f35e1449579341d607c267, type: 3}
+  ScoreTotalSE: {fileID: 8300000, guid: c784e12a91bd9264698f9bf7e94ca5bf, type: 3}
+  ResultShowedGingle: {fileID: 8300000, guid: 00b69ae80c3512945bf764f38b7c2d2c, type: 3}
 --- !u!82 &1971426108
 AudioSource:
   m_ObjectHideFlags: 0
