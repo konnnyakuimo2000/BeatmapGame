@@ -48,6 +48,9 @@ public class RhythmGameController : MonoBehaviour
 
     [Header("SE設定")]
     public AudioClip[] SEClips;
+    public AudioClip ScoreAttributeSE;
+    public AudioClip ScoreTotalSE;
+    public AudioClip ResultShowedGingle;
 
     /// <summary>
     /// シーン間で選択された曲を渡す
@@ -552,26 +555,32 @@ public class RhythmGameController : MonoBehaviour
 
         // Excellentの表示
         ExcellentText.gameObject.SetActive(true);
+        BGMSource.PlayOneShot(ScoreAttributeSE);
         yield return new WaitForSeconds(0.9f);
 
         // Goodの表示
         GoodText.gameObject.SetActive(true);
+        BGMSource.PlayOneShot(ScoreAttributeSE);
         yield return new WaitForSeconds(0.9f);
 
         // Badの表示
         BadText.gameObject.SetActive(true);
+        BGMSource.PlayOneShot(ScoreAttributeSE);
         yield return new WaitForSeconds(0.9f);
 
         // 最大コンボの表示
+        BGMSource.PlayOneShot(ScoreAttributeSE);
         MaxComboText.gameObject.SetActive(true);
         yield return new WaitForSeconds(1.2f);
 
         // スコアの表示
         ResultScore.gameObject.SetActive(true);
+        BGMSource.PlayOneShot(ScoreTotalSE);
         yield return new WaitForSeconds(1.6f);
 
         // 進行テキストの表示
         OptionText.gameObject.SetActive(true);
+        BGMSource.PlayOneShot(ResultShowedGingle);
         isResultShowed = true;
     }
 }
