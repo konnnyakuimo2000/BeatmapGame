@@ -38,6 +38,9 @@ public class TitleManager : MonoBehaviour
     public TextMeshProUGUI BGMVolumeLabelText;
     public Transform BGMVolumeMeterParent;
 
+    [Header("トランジション")]
+    public Image TransitionPanel;
+
     private TextMeshProUGUI instructionText;
     private float flashSpeed = 2.0f;
     private List<Button> musicButtons = new List<Button>();
@@ -59,7 +62,8 @@ public class TitleManager : MonoBehaviour
         // 表示/非表示
         StartPanel.SetActive(false);
         SettingPanel.SetActive(false);
-
+        TransitionPanel.gameObject.SetActive(false);
+        
         // 曲リストの生成
         GenerateMusicList();
 
@@ -446,6 +450,39 @@ public class TitleManager : MonoBehaviour
         RhythmGameController.SelectedSEIndex = currentSEIndex;
         RhythmGameController.SelectedSEVolume = currentSEVolume / 10.0f;
         RhythmGameController.SelectedBGMVolume = currentBGMVolume / 10.0f;
+
+        // シーンのトランジションを開始
+        StartCoroutine(TitleTransition());
+    }
+
+    /// <summary>
+    /// ゲームシーンへのトランジション
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator TitleTransition()
+    {
+        if (TransitionPanel != null)
+        {
+            TransitionPanel.gameObject.SetActive(true);
+            
+            // 最初はサイズ0
+            TransitionPanel.rectTransform.localScale = Vector3.zero;
+
+            float duration = 0.5f; // アニメーション時間
+            float time = 0f;
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                float progress = time / duration;
+
+                // 拡大する
+                float scale = Mathf.Lerp(0f, 30f, progress);
+                TransitionPanel.rectTransform.localScale = new Vector3(scale, scale, 1f);
+
+                yield return null;
+            }
+        }
 
         // シーン遷移
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);

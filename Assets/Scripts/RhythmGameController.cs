@@ -161,8 +161,13 @@ public class RhythmGameController : MonoBehaviour
             LineEffectPrefabs[i].SetActive(false);
         }
 
-        // フェードアウト用のマスクを透明化
-        FadePanel.color = new Color(0, 0, 0, 0);
+        // マテリアルを複製して割り当てる
+        FadePanel.material = new Material(FadePanel.material);
+        FadePanel.material.SetFloat("_Radius", 0f);
+        FadePanel.gameObject.SetActive(true);
+
+        // シーンのトランジション処理を開始
+        StartCoroutine(GameTransition());
 
         // リザルト要素を非アクティブ化（タイトルとヘッダー以外）
         for (int i = 6; i < ResultCanvas.transform.childCount; i++)
@@ -306,6 +311,33 @@ public class RhythmGameController : MonoBehaviour
                 }
             }
         }
+    }
+    
+    /// <summary>
+    /// 開始時のシーントランジション
+    /// </summary>
+    private IEnumerator GameTransition()
+    {
+        float duration = 0.5f;
+        float time = 0f;
+
+        // マテリアルを取得
+        Material mat = FadePanel.material;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float progress = time / duration;
+
+            // 半径を拡大
+            float radius = Mathf.Lerp(0f, 1.2f, progress);
+            mat.SetFloat("_Radius", radius);
+
+            yield return null;
+        }
+
+        // 最後にパネル自体を非表示にする
+        FadePanel.gameObject.SetActive(false);
     }
 
     /// <summary>
