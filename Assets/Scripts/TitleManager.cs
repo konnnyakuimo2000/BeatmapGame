@@ -26,6 +26,9 @@ public class TitleManager : MonoBehaviour
     public Button SERightButton;
     public AudioClip[] SEClips;
     public string[] SENames;
+    public AudioClip StartPanelSE;
+    public AudioClip SettingPanelSE;
+    public AudioClip SelectSE;
 
     [Header("SE音量設定")]
     public TextMeshProUGUI SEVolumeLabelText;
@@ -102,6 +105,7 @@ public class TitleManager : MonoBehaviour
             {
                 Instruction.SetActive(false);
                 StartPanel.SetActive(true);
+                previewSource.PlayOneShot(StartPanelSE, currentSEVolume / 10.0f);
 
                 // 一番上を選択状態にする
                 currentSelectionIndex = 0;
@@ -113,6 +117,7 @@ public class TitleManager : MonoBehaviour
             {
                 Instruction.SetActive(false);
                 SettingPanel.SetActive(true);
+                previewSource.PlayOneShot(SettingPanelSE, currentSEVolume / 10.0f);
 
                 currentSettingRow = 0;
                 UpdateSettingVisual();
@@ -131,6 +136,7 @@ public class TitleManager : MonoBehaviour
             {
                 currentSelectionIndex--;
                 if (currentSelectionIndex < 0) currentSelectionIndex = 0;
+                previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
                 UpdateSelectionVisual();
             }
 
@@ -139,6 +145,7 @@ public class TitleManager : MonoBehaviour
             {
                 currentSelectionIndex++;
                 if (currentSelectionIndex >= musicButtons.Count) currentSelectionIndex = musicButtons.Count - 1;
+                previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
                 UpdateSelectionVisual();
             }
 
@@ -148,6 +155,7 @@ public class TitleManager : MonoBehaviour
                 // 現在選択中のボタンのクリックイベントを実行
                 if (musicButtons.Count > 0)
                 {
+                    previewSource.PlayOneShot(StartPanelSE);
                     musicButtons[currentSelectionIndex].onClick.Invoke();
                 }
             }
@@ -179,12 +187,14 @@ public class TitleManager : MonoBehaviour
             currentSettingRow--;
             if (currentSettingRow < 0) currentSettingRow = 0;
             UpdateSettingVisual();
+            previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
         }
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             currentSettingRow++;
             if (currentSettingRow > 2) currentSettingRow = 2;
             UpdateSettingVisual();
+            previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
         }
 
         // 値の変更
@@ -231,10 +241,11 @@ public class TitleManager : MonoBehaviour
                 SettingPanel.SetActive(false);
                 Instruction.SetActive(true);
             }
-            else
+            else 
             {
                 currentSettingRow++;
                 UpdateSettingVisual();
+                previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
             }
         }
 
