@@ -511,12 +511,7 @@ MonoBehaviour:
   scrollRect: {fileID: 1283102368}
   musicButtonPrefab: {fileID: 7876792521226698470, guid: 702d3f4e5395dde4794598eff39bee69, type: 3}
   beatmaps:
-  - {fileID: 11400000, guid: a0baf310919ddc247b2587f3bb6aa4ab, type: 2}
-  - {fileID: 11400000, guid: a0baf310919ddc247b2587f3bb6aa4ab, type: 2}
-  - {fileID: 11400000, guid: a0baf310919ddc247b2587f3bb6aa4ab, type: 2}
-  - {fileID: 11400000, guid: a0baf310919ddc247b2587f3bb6aa4ab, type: 2}
-  - {fileID: 11400000, guid: a0baf310919ddc247b2587f3bb6aa4ab, type: 2}
-  - {fileID: 11400000, guid: a0baf310919ddc247b2587f3bb6aa4ab, type: 2}
+  - {fileID: 11400000, guid: 20af92af027a98145a816582e72665fc, type: 2}
   SETypeLabelText: {fileID: 101873265}
   SEText: {fileID: 431579434}
   SELeftButton: {fileID: 943128806}

@@ -1257,7 +1257,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u30B3\u30B3\u30CA\u30C3\u30C4\u30E2\u30FC\u30EB"
+  m_text: "\u66F2\u306E\u30BF\u30A4\u30C8\u30EB"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7a57d9d5dcb5d6e48b26f54d6e23baaf, type: 2}
   m_sharedMaterial: {fileID: -8839091486887523150, guid: 7a57d9d5dcb5d6e48b26f54d6e23baaf, type: 2}
@@ -3016,7 +3016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dcc4a0e03838cc42b7e673f905b0cbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentBeatmap: {fileID: 11400000, guid: a0baf310919ddc247b2587f3bb6aa4ab, type: 2}
+  CurrentBeatmap: {fileID: 11400000, guid: 20af92af027a98145a816582e72665fc, type: 2}
   LaneXPositions:
   - -3
   - -1
