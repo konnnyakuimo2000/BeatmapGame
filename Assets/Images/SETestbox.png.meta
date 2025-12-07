@@ -116,10 +116,10 @@ TextureImporter:
       name: SETestbox_0
       rect:
         serializedVersion: 2
-        x: 26
-        y: 106
-        width: 2475
-        height: 1016
+        x: 0
+        y: 0
+        width: 2525
+        height: 1235
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -147,8 +147,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      SETestbox_0: -2137141918419645861
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
