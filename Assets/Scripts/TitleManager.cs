@@ -461,27 +461,56 @@ public class TitleManager : MonoBehaviour
     /// <returns></returns>
     private IEnumerator TitleTransition()
     {
-        if (TransitionPanel != null)
+        TransitionPanel.gameObject.SetActive(true);
+        
+        // 最初はサイズ0
+        TransitionPanel.rectTransform.localScale = Vector3.zero;
+
+        // 演出のために複製
+        Transform parent = TransitionPanel.transform.parent;
+        Image panel0 = TransitionPanel;
+        Image panel1 = Instantiate(TransitionPanel, parent);
+        Image panel2 = Instantiate(TransitionPanel, parent);
+        Image panel3 = Instantiate(TransitionPanel, parent);
+        Image panel4 = Instantiate(TransitionPanel, parent);
+        
+        // 色の設定
+        panel0.color = Color.white;
+        panel1.color = Color.orangeRed;
+        panel2.color = Color.lightGray;
+        panel3.color = Color.dimGray;
+        panel4.color = Color.black;
+
+        float duration = 0.8f;
+        float maxScale = 30.0f;
+        float time = 0f;
+
+        while (time < duration + 0.8f)
         {
-            TransitionPanel.gameObject.SetActive(true);
-            
-            // 最初はサイズ0
-            TransitionPanel.rectTransform.localScale = Vector3.zero;
+            time += Time.deltaTime;
 
-            float duration = 0.5f; // アニメーション時間
-            float time = 0f;
+            // 進捗率を時差付きで計算
+            float t0 = Mathf.Clamp01((time - 0f) / duration);
+            float t1 = Mathf.Clamp01((time - 0.4f) / duration);
+            float t2 = Mathf.Clamp01((time - 0.6f) / duration);
+            float t3 = Mathf.Clamp01((time - 0.75f) / duration);
+            float t4 = Mathf.Clamp01((time - 0.8f) / duration);
 
-            while (time < duration)
-            {
-                time += Time.deltaTime;
-                float progress = time / duration;
+            // 4次関数でイージング
+            float scale0 = Mathf.Pow(t0, 4.0f) * maxScale;
+            float scale1 = Mathf.Pow(t1, 4.0f) * maxScale;
+            float scale2 = Mathf.Pow(t2, 4.0f) * maxScale;
+            float scale3 = Mathf.Pow(t3, 4.0f) * maxScale;
+            float scale4 = Mathf.Pow(t4, 4.0f) * maxScale;
 
-                // 拡大する
-                float scale = Mathf.Lerp(0f, 30f, progress);
-                TransitionPanel.rectTransform.localScale = new Vector3(scale, scale, 1f);
+            // サイズ適用
+            TransitionPanel.rectTransform.localScale = new Vector3(scale0, scale0, 1f);
+            panel1.rectTransform.localScale = new Vector3(scale1, scale1, 1f);
+            panel2.rectTransform.localScale = new Vector3(scale2, scale2, 1f);
+            panel3.rectTransform.localScale = new Vector3(scale3, scale3, 1f);
+            panel4.rectTransform.localScale = new Vector3(scale4, scale4, 1f);
 
-                yield return null;
-            }
+            yield return null;
         }
 
         // シーン遷移
