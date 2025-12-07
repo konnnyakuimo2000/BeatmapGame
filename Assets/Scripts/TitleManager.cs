@@ -63,7 +63,7 @@ public class TitleManager : MonoBehaviour
         StartPanel.SetActive(false);
         SettingPanel.SetActive(false);
         TransitionPanel.gameObject.SetActive(false);
-        
+
         // 曲リストの生成
         GenerateMusicList();
 
@@ -131,7 +131,7 @@ public class TitleManager : MonoBehaviour
         {
             // 背景フレームを見せない
             BackgroundFrame.SetActive(false);
-            
+
             // 上移動
             if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
             {
@@ -171,7 +171,7 @@ public class TitleManager : MonoBehaviour
 
         // 設定パネルが開いている時
         else if (SettingPanel.activeSelf)
-        {            
+        {
             HandleSettingInput();
         }
     }
@@ -181,7 +181,7 @@ public class TitleManager : MonoBehaviour
     {
         // 背景フレームを見せない
         BackgroundFrame.SetActive(false);
-    
+
         // 項目の移動
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -242,7 +242,7 @@ public class TitleManager : MonoBehaviour
                 SettingPanel.SetActive(false);
                 Instruction.SetActive(true);
             }
-            else 
+            else
             {
                 currentSettingRow++;
                 UpdateSettingVisual();
@@ -288,7 +288,7 @@ public class TitleManager : MonoBehaviour
 
         // 確認のために音を鳴らす
         TitleAudioSource.PlayOneShot(SEClips[currentSEIndex], currentSEVolume / 10.0f);
-        
+
     }
 
     // BGMの音量を変更する関数
@@ -441,12 +441,12 @@ public class TitleManager : MonoBehaviour
     void OnMusicSelected(Beatmap beatmap)
     {
         // 選んだ曲を静的変数に保存
-        RhythmGameController.SelectedBeatmap = beatmap;
+        GameManager.SelectedBeatmap = beatmap;
 
         // 設定項目を静的変数に保存
-        RhythmGameController.SelectedSEIndex = currentSEIndex;
-        RhythmGameController.SelectedSEVolume = currentSEVolume / 10.0f;
-        RhythmGameController.SelectedBGMVolume = currentBGMVolume / 10.0f;
+        GameManager.SelectedSEIndex = currentSEIndex;
+        GameManager.SelectedSEVolume = currentSEVolume / 10.0f;
+        GameManager.SelectedBGMVolume = currentBGMVolume / 10.0f;
 
         // シーンのトランジションを開始
         StartCoroutine(TitleTransition());
@@ -459,18 +459,18 @@ public class TitleManager : MonoBehaviour
     private IEnumerator TitleTransition()
     {
         TransitionPanel.gameObject.SetActive(true);
-        
+
         TransitionPanel.rectTransform.localScale = Vector3.zero;
         Transform parent = TransitionPanel.transform.parent;
-        
+
         // 色の設定
         Color[] colors = new Color[]
         {
-            Color.white,        
-            Color.orangeRed, 
-            Color.lightGray,  
-            Color.dimGray, 
-            Color.black 
+            Color.white,
+            Color.orangeRed,
+            Color.lightGray,
+            Color.dimGray,
+            Color.black
         };
 
         // 遅延時間の設定

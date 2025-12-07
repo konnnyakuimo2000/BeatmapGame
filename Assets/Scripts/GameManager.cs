@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using unityroom.Api;
 
-public class RhythmGameController : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [Header("譜面データ")]
     public Beatmap CurrentBeatmap;
@@ -208,7 +208,8 @@ public class RhythmGameController : MonoBehaviour
 
     void Update()
     {
-        if (isGameStarted){
+        if (isGameStarted)
+        {
             // 曲が始まっていない時
             if (!isMusicStarted)
             {
@@ -307,7 +308,7 @@ public class RhythmGameController : MonoBehaviour
             }
         }
     }
-    
+
     /// <summary>
     /// 遷移直後のシーントランジション
     /// </summary>
@@ -322,10 +323,10 @@ public class RhythmGameController : MonoBehaviour
             Color.orange,
             Color.white
         };
-        
+
         // 遅延時間の設定
         float[] delays = new float[] { 0f, 0.4f, 0.6f, 0.75f, 0.84f };
-        
+
         List<Image> panels = new List<Image>();
         List<Material> materials = new List<Material>();
 
@@ -338,9 +339,9 @@ public class RhythmGameController : MonoBehaviour
             // 0番目は既存のもの、それ以外は複製
             if (i == 0) panel = TransitionPanel;
             else panel = Instantiate(TransitionPanel, parent);
-            
+
             // 奥へ送る
-            panel.transform.SetAsFirstSibling(); 
+            panel.transform.SetAsFirstSibling();
 
             // マテリアルを個別に複製
             panel.material = new Material(TransitionPanel.material);
@@ -353,7 +354,7 @@ public class RhythmGameController : MonoBehaviour
         }
 
         // 順番を正しく並べ替える
-        for(int i = panels.Count - 1; i >= 0; i--)
+        for (int i = panels.Count - 1; i >= 0; i--)
         {
             panels[i].transform.SetAsLastSibling();
         }
@@ -369,10 +370,10 @@ public class RhythmGameController : MonoBehaviour
             for (int i = 0; i < panels.Count; i++)
             {
                 float t = Mathf.Clamp01((time - delays[i]) / duration);
-                
+
                 // イージング
                 float progress = 1f - Mathf.Pow(1f - t, 4f);
-                
+
                 // 半径を広げる
                 materials[i].SetFloat("_Radius", progress * 1.2f);
             }
