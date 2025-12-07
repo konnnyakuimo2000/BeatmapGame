@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f8ee9dbbbeecf944b6ae2f317b30eab, type: 3}
   m_Name: ShiningStar
   m_EditorClassIdentifier: 
-  title: ShiningStar
+  title: Shining Star
   audioClip: {fileID: 8300000, guid: 6efb3262aa19f7d4ab1c9b5c0a22c8be, type: 3}
   bpm: 140
   beatsPerMeasure: 4
@@ -351,16 +351,16 @@ MonoBehaviour:
     lane: 3
   - step: 396
     length_in_steps: 1
-    lane: 3
-  - step: 396
-    length_in_steps: 1
     lane: 2
   - step: 396
     length_in_steps: 1
-    lane: 0
+    lane: 3
   - step: 396
     length_in_steps: 1
     lane: 1
+  - step: 396
+    length_in_steps: 1
+    lane: 0
   - step: 398
     length_in_steps: 1
     lane: 0
@@ -783,13 +783,13 @@ MonoBehaviour:
     lane: 1
   - step: 789
     length_in_steps: 29
-    lane: 1
-  - step: 789
-    length_in_steps: 29
     lane: 2
   - step: 789
     length_in_steps: 29
     lane: 0
+  - step: 789
+    length_in_steps: 29
+    lane: 1
   - step: 789
     length_in_steps: 29
     lane: 3
