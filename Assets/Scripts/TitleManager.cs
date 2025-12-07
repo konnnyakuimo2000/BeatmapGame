@@ -14,6 +14,7 @@ public class TitleManager : MonoBehaviour
     public Transform ScrollViewContent;
     public GameObject SettingPanel;
     public ScrollRect scrollRect;
+    public AudioSource TitleAudioSource;
 
     [Header("リソース設定")]
     public GameObject musicButtonPrefab;
@@ -46,7 +47,6 @@ public class TitleManager : MonoBehaviour
     private List<Button> musicButtons = new List<Button>();
     private int currentSelectionIndex = 0;
     private int currentSEIndex = 0;
-    private AudioSource previewSource;
     private int currentSettingRow = 0;
     private int currentSEVolume = 10;
     private int currentBGMVolume = 10;
@@ -69,9 +69,6 @@ public class TitleManager : MonoBehaviour
 
         // 変数割り当て
         instructionText = Instruction.GetComponent<TextMeshProUGUI>();
-
-        // プレビュー用のAudioSourceを作成
-        previewSource = gameObject.AddComponent<AudioSource>();
 
         // ボタンにクリックイベントを登録
         SELeftButton.onClick.AddListener(() => ChangeSE(-1));
@@ -109,7 +106,7 @@ public class TitleManager : MonoBehaviour
             {
                 Instruction.SetActive(false);
                 StartPanel.SetActive(true);
-                previewSource.PlayOneShot(StartPanelSE, currentSEVolume / 10.0f);
+                TitleAudioSource.PlayOneShot(StartPanelSE, currentSEVolume / 10.0f);
 
                 // 一番上を選択状態にする
                 currentSelectionIndex = 0;
@@ -121,7 +118,7 @@ public class TitleManager : MonoBehaviour
             {
                 Instruction.SetActive(false);
                 SettingPanel.SetActive(true);
-                previewSource.PlayOneShot(SettingPanelSE, currentSEVolume / 10.0f);
+                TitleAudioSource.PlayOneShot(SettingPanelSE, currentSEVolume / 10.0f);
 
                 currentSettingRow = 0;
                 UpdateSettingVisual();
@@ -140,7 +137,7 @@ public class TitleManager : MonoBehaviour
             {
                 currentSelectionIndex--;
                 if (currentSelectionIndex < 0) currentSelectionIndex = 0;
-                previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
+                TitleAudioSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
                 UpdateSelectionVisual();
             }
 
@@ -149,7 +146,7 @@ public class TitleManager : MonoBehaviour
             {
                 currentSelectionIndex++;
                 if (currentSelectionIndex >= musicButtons.Count) currentSelectionIndex = musicButtons.Count - 1;
-                previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
+                TitleAudioSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
                 UpdateSelectionVisual();
             }
 
@@ -159,7 +156,7 @@ public class TitleManager : MonoBehaviour
                 // 現在選択中のボタンのクリックイベントを実行
                 if (musicButtons.Count > 0)
                 {
-                    previewSource.PlayOneShot(StartPanelSE);
+                    TitleAudioSource.PlayOneShot(StartPanelSE);
                     musicButtons[currentSelectionIndex].onClick.Invoke();
                 }
             }
@@ -191,14 +188,14 @@ public class TitleManager : MonoBehaviour
             currentSettingRow--;
             if (currentSettingRow < 0) currentSettingRow = 0;
             UpdateSettingVisual();
-            previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
+            TitleAudioSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
         }
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             currentSettingRow++;
             if (currentSettingRow > 2) currentSettingRow = 2;
             UpdateSettingVisual();
-            previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
+            TitleAudioSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
         }
 
         // 値の変更
@@ -249,7 +246,7 @@ public class TitleManager : MonoBehaviour
             {
                 currentSettingRow++;
                 UpdateSettingVisual();
-                previewSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
+                TitleAudioSource.PlayOneShot(SelectSE, currentSEVolume / 10.0f);
             }
         }
 
@@ -275,7 +272,7 @@ public class TitleManager : MonoBehaviour
         SEText.text = SENames[currentSEIndex];
 
         // 変更したSEをプレビュー再生
-        if (direction != 0) previewSource.PlayOneShot(SEClips[currentSEIndex], currentSEVolume / 10.0f);
+        if (direction != 0) TitleAudioSource.PlayOneShot(SEClips[currentSEIndex], currentSEVolume / 10.0f);
     }
 
     // SEの音量を変更する関数
@@ -290,7 +287,7 @@ public class TitleManager : MonoBehaviour
         UpdateSEVolumeMeter();
 
         // 確認のために音を鳴らす
-        previewSource.PlayOneShot(SEClips[currentSEIndex], currentSEVolume / 10.0f);
+        TitleAudioSource.PlayOneShot(SEClips[currentSEIndex], currentSEVolume / 10.0f);
         
     }
 
@@ -463,53 +460,55 @@ public class TitleManager : MonoBehaviour
     {
         TransitionPanel.gameObject.SetActive(true);
         
-        // 最初はサイズ0
         TransitionPanel.rectTransform.localScale = Vector3.zero;
-
-        // 演出のために複製
         Transform parent = TransitionPanel.transform.parent;
-        Image panel0 = TransitionPanel;
-        Image panel1 = Instantiate(TransitionPanel, parent);
-        Image panel2 = Instantiate(TransitionPanel, parent);
-        Image panel3 = Instantiate(TransitionPanel, parent);
-        Image panel4 = Instantiate(TransitionPanel, parent);
         
         // 色の設定
-        panel0.color = Color.white;
-        panel1.color = Color.orangeRed;
-        panel2.color = Color.lightGray;
-        panel3.color = Color.dimGray;
-        panel4.color = Color.black;
+        Color[] colors = new Color[]
+        {
+            Color.white,        
+            Color.orangeRed, 
+            Color.lightGray,  
+            Color.dimGray, 
+            Color.black 
+        };
+
+        // 遅延時間の設定
+        float[] delays = new float[] { 0f, 0.4f, 0.6f, 0.75f, 0.84f };
+
+        List<Image> panels = new List<Image>();
+
+        // パネルの生成と設定
+        for (int i = 0; i < colors.Length; i++)
+        {
+            Image panel;
+            if (i == 0) panel = TransitionPanel;
+            else panel = Instantiate(TransitionPanel, parent);
+
+            panel.color = colors[i];
+            panel.rectTransform.localScale = Vector3.zero;
+            panels.Add(panel);
+        }
 
         float duration = 0.8f;
         float maxScale = 30.0f;
         float time = 0f;
 
-        while (time < duration + 0.8f)
+        while (time < duration + delays[delays.Length - 1])
         {
             time += Time.deltaTime;
 
-            // 進捗率を時差付きで計算
-            float t0 = Mathf.Clamp01((time - 0f) / duration);
-            float t1 = Mathf.Clamp01((time - 0.4f) / duration);
-            float t2 = Mathf.Clamp01((time - 0.6f) / duration);
-            float t3 = Mathf.Clamp01((time - 0.75f) / duration);
-            float t4 = Mathf.Clamp01((time - 0.8f) / duration);
+            for (int i = 0; i < panels.Count; i++)
+            {
+                // 進捗率を時差付きで計算
+                float t = Mathf.Clamp01((time - delays[i]) / duration);
 
-            // 4次関数でイージング
-            float scale0 = Mathf.Pow(t0, 4.0f) * maxScale;
-            float scale1 = Mathf.Pow(t1, 4.0f) * maxScale;
-            float scale2 = Mathf.Pow(t2, 4.0f) * maxScale;
-            float scale3 = Mathf.Pow(t3, 4.0f) * maxScale;
-            float scale4 = Mathf.Pow(t4, 4.0f) * maxScale;
+                // 4次関数でイージング
+                float scale = Mathf.Pow(t, 4.0f) * maxScale;
 
-            // サイズ適用
-            TransitionPanel.rectTransform.localScale = new Vector3(scale0, scale0, 1f);
-            panel1.rectTransform.localScale = new Vector3(scale1, scale1, 1f);
-            panel2.rectTransform.localScale = new Vector3(scale2, scale2, 1f);
-            panel3.rectTransform.localScale = new Vector3(scale3, scale3, 1f);
-            panel4.rectTransform.localScale = new Vector3(scale4, scale4, 1f);
-
+                // サイズ適用
+                panels[i].rectTransform.localScale = new Vector3(scale, scale, 1f);
+            }
             yield return null;
         }
 
