@@ -20,7 +20,7 @@ public class RhythmGameController : MonoBehaviour
     public TextMeshProUGUI GamingTitle;
     public TextMeshProUGUI GamingScore;
     public TextMeshProUGUI ComboText;
-    public Image FadePanel;
+    public Image TransitionPanel;
     public GameObject ResultCanvas;
     public TextMeshProUGUI ResultTitle;
     public TextMeshProUGUI ResultScore;
@@ -160,11 +160,6 @@ public class RhythmGameController : MonoBehaviour
         {
             LineEffectPrefabs[i].SetActive(false);
         }
-
-        // マテリアルを複製して割り当てる
-        FadePanel.material = new Material(FadePanel.material);
-        FadePanel.material.SetFloat("_Radius", 0f);
-        FadePanel.gameObject.SetActive(true);
 
         // シーンのトランジション処理を開始
         StartCoroutine(GameTransition());
@@ -314,30 +309,83 @@ public class RhythmGameController : MonoBehaviour
     }
     
     /// <summary>
-    /// 開始時のシーントランジション
+    /// 遷移直後のシーントランジション
     /// </summary>
     private IEnumerator GameTransition()
     {
-        float duration = 0.5f;
+        // 色の設定
+        Color[] colors = new Color[]
+        {
+            Color.black,
+            Color.indigo,
+            Color.magenta,
+            Color.orange,
+            Color.white
+        };
+        
+        // 遅延時間の設定
+        float[] delays = new float[] { 0f, 0.4f, 0.6f, 0.75f, 0.84f };
+        
+        List<Image> panels = new List<Image>();
+        List<Material> materials = new List<Material>();
+
+        TransitionPanel.gameObject.SetActive(true);
+        Transform parent = TransitionPanel.transform.parent;
+
+        for (int i = 0; i < colors.Length; i++)
+        {
+            Image panel;
+            // 0番目は既存のもの、それ以外は複製
+            if (i == 0) panel = TransitionPanel;
+            else panel = Instantiate(TransitionPanel, parent);
+            
+            // 奥へ送る
+            panel.transform.SetAsFirstSibling(); 
+
+            // マテリアルを個別に複製
+            panel.material = new Material(TransitionPanel.material);
+            panel.material.SetColor("_Color", Color.white);
+            panel.material.SetFloat("_Radius", 0f); // 最初は穴なし
+            panel.color = colors[i];
+
+            panels.Add(panel);
+            materials.Add(panel.material);
+        }
+
+        // 順番を正しく並べ替える
+        for(int i = panels.Count - 1; i >= 0; i--)
+        {
+            panels[i].transform.SetAsLastSibling();
+        }
+
+        float duration = 0.8f;
         float time = 0f;
 
-        // マテリアルを取得
-        Material mat = FadePanel.material;
-
-        while (time < duration)
+        while (time < duration + delays[delays.Length - 1])
         {
             time += Time.deltaTime;
-            float progress = time / duration;
 
-            // 半径を拡大
-            float radius = Mathf.Lerp(0f, 1.2f, progress);
-            mat.SetFloat("_Radius", radius);
+            // 各パネルの進捗率を計算
+            for (int i = 0; i < panels.Count; i++)
+            {
+                float t = Mathf.Clamp01((time - delays[i]) / duration);
+                
+                // イージング
+                float progress = 1f - Mathf.Pow(1f - t, 4f);
+                
+                // 半径を広げる
+                materials[i].SetFloat("_Radius", progress * 1.2f);
+            }
 
             yield return null;
         }
 
-        // 最後にパネル自体を非表示にする
-        FadePanel.gameObject.SetActive(false);
+        // 複製したパネルを削除/非表示にする
+        for (int i = 1; i < panels.Count; i++)
+        {
+            Destroy(panels[i].gameObject);
+        }
+        TransitionPanel.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -575,7 +623,7 @@ public class RhythmGameController : MonoBehaviour
             float alpha = time / 2.0f;
 
             // マスクの不透過度を少しずつ上げる
-            FadePanel.color = Color.Lerp(startColor, endColor, alpha);
+            TransitionPanel.color = Color.Lerp(startColor, endColor, alpha);
 
             yield return null;
         }
