@@ -16,7 +16,7 @@ public class NoteObject : MonoBehaviour
     /// <summary>
     /// 自身を管理するコントローラ
     /// </summary>
-    public RhythmGameController Controller;
+    public GameManager Controller;
 
     /// <summary>
     /// 自身のレーン番号 (0-3)
