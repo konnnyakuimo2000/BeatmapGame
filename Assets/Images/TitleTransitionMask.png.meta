@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d4bee7ce8c820234bbbbeb6e31312cd9
+guid: 6b320aa048e455b40b1e42f5cc68afaf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3092853992126472442
-    second: LaneEffect_0
+      213: -1722476977117720454
+    second: TitleTransitionMask_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: LaneEffect_0
+      name: TitleTransitionMask_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 81
-        width: 300
-        height: 519
+        y: 0
+        width: 1080
+        height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: af0e8d6b1560cea20800000000000000
-      internalID: 3092853992126472442
+      spriteID: a701c1db0588818e0800000000000000
+      internalID: -1722476977117720454
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      LaneEffect_0: 3092853992126472442
+      TitleTransitionMask_0: -1722476977117720454
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
