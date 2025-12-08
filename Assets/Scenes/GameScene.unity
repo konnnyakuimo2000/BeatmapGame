@@ -837,7 +837,7 @@ GameObject:
   - component: {fileID: 700815754}
   - component: {fileID: 700815753}
   m_Layer: 5
-  m_Name: FadePanel
+  m_Name: TransitionPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2998,7 +2998,7 @@ GameObject:
   - component: {fileID: 1971426108}
   - component: {fileID: 1971426107}
   m_Layer: 0
-  m_Name: RhythmGameController
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3027,7 +3027,7 @@ MonoBehaviour:
   GamingTitle: {fileID: 915180466}
   GamingScore: {fileID: 2111741838}
   ComboText: {fileID: 588296998}
-  TransitionPanel: {fileID: 0}
+  TransitionPanel: {fileID: 700815753}
   ResultCanvas: {fileID: 1464451794}
   ResultTitle: {fileID: 593402890}
   ResultScore: {fileID: 910039270}

@@ -110,6 +110,8 @@ public class TitleManager : MonoBehaviour
 
                 // 一番上を選択状態にする
                 currentSelectionIndex = 0;
+                Canvas.ForceUpdateCanvases();
+                scrollRect.verticalNormalizedPosition = 1f;
                 UpdateSelectionVisual();
             }
 
@@ -398,8 +400,6 @@ public class TitleManager : MonoBehaviour
     // 選択項目が画面内に収まるようにスクロールさせる
     void AutoScrollToSelection()
     {
-        if (scrollRect == null) return;
-
         // ターゲットとなるボタンのRectTransform
         RectTransform target = musicButtons[currentSelectionIndex].GetComponent<RectTransform>();
         RectTransform content = scrollRect.content;

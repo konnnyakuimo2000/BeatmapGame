@@ -9,7 +9,7 @@ public class BeatmapEditorWindow : EditorWindow
     private const int NUM_LANES = 4; // レーン数を4に固定
     private const float LANE_HEIGHT = 20f; // 1レーンの縦の高さ
     private const float STEP_WIDTH = 12f;  // 1ステップの横の幅（長さ）
-    private const int TOTAL_STEPS_TO_DISPLAY = 1000; // 描画する総ステップ数
+    private const int TOTAL_STEPS_TO_DISPLAY = 6000; // 描画する総ステップ数
 
     // --- 編集中のアセット ---
     private Beatmap currentBeatmap; 
