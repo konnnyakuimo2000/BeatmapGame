@@ -96,10 +96,10 @@ MonoBehaviour:
     lane: 2
   - step: 195
     length_in_steps: 1
-    lane: 3
+    lane: 0
   - step: 195
     length_in_steps: 1
-    lane: 0
+    lane: 3
   - step: 216
     length_in_steps: 1
     lane: 2
@@ -138,16 +138,16 @@ MonoBehaviour:
     lane: 3
   - step: 388
     length_in_steps: 1
-    lane: 2
+    lane: 1
+  - step: 388
+    length_in_steps: 1
+    lane: 0
   - step: 388
     length_in_steps: 1
     lane: 3
   - step: 388
     length_in_steps: 1
-    lane: 1
-  - step: 388
-    length_in_steps: 1
-    lane: 0
+    lane: 2
   - step: 454
     length_in_steps: 1
     lane: 2

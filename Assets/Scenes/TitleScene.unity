@@ -532,6 +532,8 @@ MonoBehaviour:
   musicButtonPrefab: {fileID: 7876792521226698470, guid: 702d3f4e5395dde4794598eff39bee69, type: 3}
   beatmaps:
   - {fileID: 11400000, guid: 20af92af027a98145a816582e72665fc, type: 2}
+  - {fileID: 11400000, guid: 2765e07214bcea345a6d6350d05ead34, type: 2}
+  - {fileID: 11400000, guid: d9424fd2518865a4f8b55c1582215a50, type: 2}
   SETypeLabelText: {fileID: 101873265}
   SEText: {fileID: 431579434}
   SELeftButton: {fileID: 943128806}
