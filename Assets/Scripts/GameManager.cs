@@ -623,6 +623,10 @@ public class GameManager : MonoBehaviour
             time += Time.deltaTime;
             float alpha = time / 2.0f;
 
+            // シーントランジションように設定したマテリアルを削除
+            TransitionPanel.gameObject.SetActive(true);
+            TransitionPanel.material = null;
+
             // マスクの不透過度を少しずつ上げる
             TransitionPanel.color = Color.Lerp(startColor, endColor, alpha);
 
