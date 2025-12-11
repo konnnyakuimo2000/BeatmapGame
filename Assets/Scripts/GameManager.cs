@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI GamingScore;
     public TextMeshProUGUI ComboText;
     public Image TransitionPanel;
+    public Image BackTransitionPanel;
+    public Sprite BackTransitionSprite;
     public GameObject ResultCanvas;
     public TextMeshProUGUI ResultTitle;
     public TextMeshProUGUI ResultScore;
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI GoodText;
     public TextMeshProUGUI BadText;
     public TextMeshProUGUI MaxComboText;
+    public TextMeshProUGUI HighScoreText;
     public TextMeshProUGUI OptionText;
 
     [Header("エフェクト")]
@@ -52,6 +55,7 @@ public class GameManager : MonoBehaviour
     public AudioClip ScoreTotalSE;
     public AudioClip ResultShowedGingle;
     public AudioClip FullComboSE;
+    public AudioClip HighScoreSE;
 
     /// <summary>
     /// シーン間で選択された曲を渡す
@@ -72,6 +76,11 @@ public class GameManager : MonoBehaviour
     /// シーン間で保存されたBGMの音量
     /// </summary>
     public static float SelectedBGMVolume = 1.0f;
+
+    /// <summary>
+    /// シーン間で保存されるハイスコア
+    /// </summary>
+    private static int highScore = 0;
 
     /// <summary>
     /// 判定に使用するキー
@@ -304,11 +313,11 @@ public class GameManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.D))
                 {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+                    StartCoroutine(BackTransition(SceneManager.GetActiveScene().buildIndex - 1));
                 }
                 else if (Input.GetKeyDown(KeyCode.F))
                 {
-                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                    StartCoroutine(BackTransition(SceneManager.GetActiveScene().buildIndex));
                 }
                 else if (Input.GetKeyDown(KeyCode.J))
                 {
@@ -316,7 +325,7 @@ public class GameManager : MonoBehaviour
                     UnityroomApiClient.Instance.SendScore(1, score, ScoreboardWriteMode.HighScoreDesc);
 
                     // 最大コンボ数を登録
-                                        UnityroomApiClient.Instance.SendScore(1, maxCombo, ScoreboardWriteMode.HighScoreDesc);
+                    UnityroomApiClient.Instance.SendScore(2, maxCombo, ScoreboardWriteMode.HighScoreDesc);
                 }
             }
         }
@@ -675,7 +684,7 @@ public class GameManager : MonoBehaviour
             time += Time.deltaTime;
             float alpha = time / 2.0f;
 
-            // シーントランジションように設定したマテリアルを削除
+            // シーントランジション用に設定したマテリアルを削除
             TransitionPanel.gameObject.SetActive(true);
             TransitionPanel.material = null;
 
@@ -685,6 +694,9 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         yield return new WaitForSeconds(1.0f);
+
+        // トランジションによって子の順が入れ替わっているので最下に移動
+        ResultCanvas.transform.SetAsLastSibling();
 
         // リザルトUIの表示
         ResultCanvas.SetActive(true);
@@ -713,11 +725,84 @@ public class GameManager : MonoBehaviour
         // スコアの表示
         ResultScore.gameObject.SetActive(true);
         BGMSource.PlayOneShot(ScoreTotalSE);
+
+        // ハイスコアの場合
+        if (score > highScore)
+        {
+            yield return new WaitForSeconds(0.5f);
+            highScore = score;
+            HighScoreText.gameObject.SetActive(true);
+            BGMSource.PlayOneShot(HighScoreSE);
+        }
         yield return new WaitForSeconds(1.6f);
 
         // 進行テキストの表示
         OptionText.gameObject.SetActive(true);
         BGMSource.PlayOneShot(ResultShowedGingle);
         isResultShowed = true;
+    }
+
+    /// <summary>
+    /// ゲームシーンからのトランジション
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator BackTransition(int nextSceneIndex)
+    {
+        BackTransitionPanel.transform.SetAsLastSibling();
+        BackTransitionPanel.gameObject.SetActive(true);
+        BackTransitionPanel.rectTransform.localScale = Vector3.zero;
+        Transform parent = BackTransitionPanel.transform.parent;
+
+        // 色の設定
+        Color[] colors = new Color[]
+        {
+            Color.white,
+            Color.navyBlue,
+            Color.blueViolet,
+            Color.deepSkyBlue,
+            Color.black
+        };
+
+        // 遅延時間の設定
+        float[] delays = new float[] { 0f, 0.2f, 0.4f, 0.45f, 0.5f };
+
+        List<Image> panels = new List<Image>();
+
+        // パネルの生成と設定
+        for (int i = 0; i < colors.Length; i++)
+        {
+            Image panel;
+            if (i == 0) panel = BackTransitionPanel;
+            else panel = Instantiate(BackTransitionPanel, parent);
+
+            panel.color = colors[i];
+            panel.rectTransform.localScale = Vector3.zero;
+            panels.Add(panel);
+        }
+
+        float duration = 0.8f;
+        float maxScale = 30.0f;
+        float time = 0f;
+
+        while (time < duration + delays[delays.Length - 1])
+        {
+            time += Time.deltaTime;
+
+            for (int i = 0; i < panels.Count; i++)
+            {
+                // 進捗率を時差付きで計算
+                float t = Mathf.Clamp01((time - delays[i]) / duration);
+
+                // 4次関数でイージング
+                float scale = Mathf.Pow(t, 4.0f) * maxScale;
+
+                // サイズ適用
+                panels[i].rectTransform.localScale = new Vector3(scale, scale, 1f);
+            }
+            yield return null;
+        }
+
+        // シーン遷移
+        SceneManager.LoadScene(nextSceneIndex);
     }
 }
