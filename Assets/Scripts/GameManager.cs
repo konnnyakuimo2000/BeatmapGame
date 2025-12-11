@@ -138,6 +138,7 @@ public class GameManager : MonoBehaviour
     private int excellentScore = 100;
     private int goodScore = 50;
     private int longBonusScore = 30;
+    private int comboBonusScore = 20;
     private int excellentNum = 0;
     private int goodNum = 0;
     private int badNum = 0;
@@ -244,9 +245,6 @@ public class GameManager : MonoBehaviour
                 {
                     isGameStarted = false;
 
-                    // 最大コンボ数をそのままスコアに加算
-                    AddScore(maxCombo);
-
                     // スコア表示コルーチンを開始
                     StartCoroutine(ResultDisplay());
 
@@ -313,7 +311,11 @@ public class GameManager : MonoBehaviour
                 }
                 else if (Input.GetKeyDown(KeyCode.J))
                 {
+                    // スコアを登録
                     UnityroomApiClient.Instance.SendScore(1, score, ScoreboardWriteMode.HighScoreDesc);
+
+                    // 最大コンボ数を登録
+                                        UnityroomApiClient.Instance.SendScore(1, maxCombo, ScoreboardWriteMode.HighScoreDesc);
                 }
             }
         }
@@ -499,10 +501,15 @@ public class GameManager : MonoBehaviour
 
                 // コンボカウント
                 combo++;
+
+                // コンボ数が既定値を超えるたびに加算
+                if (combo % 10 == 0) AddScore(comboBonusScore);
+
+                // 最大コンボ数は表示に利用するのみ
                 if (maxCombo < combo) maxCombo = combo;
 
-                // 3コンボ以上なら画面に表示
-                if (combo > 2)
+                // 5コンボ以上なら画面に表示
+                if (combo > 4)
                 {
                     ComboText.gameObject.SetActive(true);
                     ComboText.text = $"{combo}コンボ!";
