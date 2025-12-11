@@ -30,6 +30,7 @@ public class TitleManager : MonoBehaviour
     public AudioClip StartPanelSE;
     public AudioClip SettingPanelSE;
     public AudioClip SelectSE;
+    public AudioClip CancelSE;
 
     [Header("SE音量設定")]
     public TextMeshProUGUI SEVolumeLabelText;
@@ -168,6 +169,7 @@ public class TitleManager : MonoBehaviour
             {
                 StartPanel.SetActive(false);
                 Instruction.SetActive(true);
+                TitleAudioSource.PlayOneShot(CancelSE);
             }
         }
 
@@ -243,6 +245,7 @@ public class TitleManager : MonoBehaviour
                 StartPanel.SetActive(false);
                 SettingPanel.SetActive(false);
                 Instruction.SetActive(true);
+                TitleAudioSource.PlayOneShot(CancelSE);
             }
             else
             {
@@ -258,6 +261,7 @@ public class TitleManager : MonoBehaviour
             StartPanel.SetActive(false);
             SettingPanel.SetActive(false);
             Instruction.SetActive(true);
+            TitleAudioSource.PlayOneShot(CancelSE);
         }
     }
 

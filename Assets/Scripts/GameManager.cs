@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
     public AudioClip ScoreAttributeSE;
     public AudioClip ScoreTotalSE;
     public AudioClip ResultShowedGingle;
+    public AudioClip FullComboSE;
 
     /// <summary>
     /// シーン間で選択された曲を渡す
@@ -549,7 +550,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// NoteObjectから呼ばれ、ノーツが判定ラインを過ぎたことを処理する
+    /// ノーツを叩き損ねたことを処理する
     /// </summary>
     public void NoteMissed(NoteObject note)
     {
@@ -652,6 +653,14 @@ public class GameManager : MonoBehaviour
         GoodText.text = goodNum.ToString();
         BadText.text = badNum.ToString();
         MaxComboText.text = maxCombo.ToString();
+
+        // フルコンボの場合
+        if (maxCombo == CurrentBeatmap.notes.Count)
+        {
+            MaxComboText.enableVertexGradient = true;
+            MaxComboText.fontSize = 160;
+            BGMSource.PlayOneShot(FullComboSE);
+        }
 
         // ゲームUIの非表示
         GamingScore.gameObject.SetActive(false);
