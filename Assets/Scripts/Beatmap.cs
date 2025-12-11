@@ -10,6 +10,8 @@ public class Beatmap : ScriptableObject
     public double bpm = 140.0;
     public int beatsPerMeasure = 4; // 拍子 (4/4なら 4)
     public double firstBeatOffsetSec = 0.0; // 最初の拍までのオフセット(秒)
+    public float notesSpeed = 10;
+    public Sprite backgroundImg;
 
     [Header("エディタ設定")]
     // 1小節あたりのグリッド分割数

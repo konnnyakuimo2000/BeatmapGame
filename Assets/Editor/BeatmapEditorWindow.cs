@@ -131,6 +131,8 @@ public class BeatmapEditorWindow : EditorWindow
         currentBeatmap.beatsPerMeasure = EditorGUILayout.IntField("拍子(X/4)", currentBeatmap.beatsPerMeasure);
         currentBeatmap.stepsPerMeasure = EditorGUILayout.IntField("1小節の最大分割数", currentBeatmap.stepsPerMeasure);
         currentBeatmap.firstBeatOffsetSec = EditorGUILayout.DoubleField("オフセット(秒)", currentBeatmap.firstBeatOffsetSec);
+        currentBeatmap.notesSpeed = EditorGUILayout.FloatField("ノーツの流れる速さ", currentBeatmap.notesSpeed);
+        currentBeatmap.backgroundImg = (Sprite)EditorGUILayout.ObjectField("Sprite", currentBeatmap.backgroundImg, typeof(Sprite), false);
     }
 
     // 再生・停止ボタンの描画
