@@ -388,8 +388,6 @@ public class TitleManager : MonoBehaviour
     // 選択状態の見た目を更新する関数
     void UpdateSelectionVisual()
     {
-        if (musicButtons.Count == 0) return;
-
         // EventSystemにより選択状態にする
         musicButtons[currentSelectionIndex].Select();
 
