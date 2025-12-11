@@ -639,7 +639,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 62 COMBO
+  m_text: 00 COMBO
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3f196e3429b6fcd4688b44ac6a4edb9b, type: 2}
   m_sharedMaterial: {fileID: -499201277520273763, guid: 3f196e3429b6fcd4688b44ac6a4edb9b, type: 2}
@@ -1141,10 +1141,10 @@ MonoBehaviour:
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+    topLeft: {r: 1, g: 0.9756165, b: 0.7226415, a: 1}
+    topRight: {r: 1, g: 0.90650845, b: 0, a: 1}
+    bottomLeft: {r: 1, g: 0.6899378, b: 0, a: 1}
+    bottomRight: {r: 1, g: 0.5753659, b: 0, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
@@ -2329,7 +2329,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1464451795
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3093,6 +3093,7 @@ MonoBehaviour:
   ScoreAttributeSE: {fileID: 8300000, guid: af3d2877b3f35e1449579341d607c267, type: 3}
   ScoreTotalSE: {fileID: 8300000, guid: c784e12a91bd9264698f9bf7e94ca5bf, type: 3}
   ResultShowedGingle: {fileID: 8300000, guid: 00b69ae80c3512945bf764f38b7c2d2c, type: 3}
+  FullComboSE: {fileID: 8300000, guid: f561d8e0a16cf4b408aae62245a6deb0, type: 3}
 --- !u!82 &1971426108
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3276,7 +3277,7 @@ MonoBehaviour:
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topLeft: {r: 1, g: 1, b: 0, a: 1}
     topRight: {r: 1, g: 1, b: 1, a: 1}
     bottomLeft: {r: 1, g: 1, b: 1, a: 1}
     bottomRight: {r: 1, g: 1, b: 1, a: 1}
@@ -3723,7 +3724,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 000
+  m_text: '0
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3f196e3429b6fcd4688b44ac6a4edb9b, type: 2}
   m_sharedMaterial: {fileID: -499201277520273763, guid: 3f196e3429b6fcd4688b44ac6a4edb9b, type: 2}
