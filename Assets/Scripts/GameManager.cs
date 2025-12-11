@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public float[] LaneXPositions = new float[] { -3.0f, -1.0f, 1.0f, 3.0f };
 
     [Header("オブジェクト参照")]
+    public Image BackgroundImg;
     public AudioSource BGMSource;
     public GameObject NotePrefab;
     public TextMeshProUGUI GamingTitle;
@@ -36,7 +37,6 @@ public class GameManager : MonoBehaviour
     public GameObject[] LineEffectPrefabs;
 
     [Header("ゲーム設定")]
-    public float NoteSpeed = 10f;
     public float SpawnZ = 50f;       // ノーツが生成されるZ座標
     public float JudgeZ = -3f;   // 判定ラインのZ座標 
 
@@ -96,6 +96,11 @@ public class GameManager : MonoBehaviour
     private int stepsPerQuarterNote;
 
     /// <summary>
+    /// ノーツの流れる速さ（物理的距離に基づく）
+    /// </summary>
+    private float notesSpeed;
+
+    /// <summary>
     /// ゲームが開始されたか
     /// </summary>
     private bool isGameStarted = false;
@@ -151,9 +156,14 @@ public class GameManager : MonoBehaviour
             Debug.LogError("譜面が設定されていません");
             return;
         }
+        // 背景設定
+        BackgroundImg.sprite = CurrentBeatmap.backgroundImg;
 
         // BGMの音量を設定
         BGMSource.volume = SelectedBGMVolume;
+
+        // 音楽再生準備
+        BGMSource.clip = CurrentBeatmap.audioClip;
 
         // 判定ラインのエフェクトを非アクティブ化
         for (int i = 0; i < LineEffectPrefabs.Length; i++)
@@ -185,13 +195,13 @@ public class GameManager : MonoBehaviour
 
         // 4分音符のステップ数を計算
         stepsPerQuarterNote = CurrentBeatmap.stepsPerMeasure / CurrentBeatmap.beatsPerMeasure;
-
-        // 音楽再生準備
-        BGMSource.clip = CurrentBeatmap.audioClip;
+        
+        // ノーツの流れる速度を取得
+        notesSpeed = CurrentBeatmap.notesSpeed;
 
         // ノーツが判定ラインに着くまでの移動時間を計算
         float distance = SpawnZ - JudgeZ;
-        noteTravelTimeInSeconds = (double)distance / NoteSpeed;
+        noteTravelTimeInSeconds = (double)distance / notesSpeed;
 
         // 譜面データを時間順にソートしておく
         CurrentBeatmap.notes.Sort((a, b) => a.step.CompareTo(b.step));
@@ -412,14 +422,14 @@ public class GameManager : MonoBehaviour
             - BeatmapUtility.GetTimeFromStep(CurrentBeatmap, noteData.step);
 
         // 速さ * 時間 でノーツの長さを計算
-        float noteLengthInUnits = NoteSpeed * (float)noteDurationInSeconds;
+        float noteLengthInUnits = notesSpeed * (float)noteDurationInSeconds;
 
         // この時点で生成時刻を過ぎているので、どの程度移動させてからスポーンすべきかを計算
         // 本来スポーンすべきだったオブジェクトの中心Y座標
         float baseCenterZ = SpawnZ + (noteLengthInUnits / 2f);
 
         // 遅れた時間の分だけ、下に移動させる
-        float distanceToMove = NoteSpeed * (float)timeSinceSpawn;
+        float distanceToMove = notesSpeed * (float)timeSinceSpawn;
 
         // 最終的な座標
         Vector3 spawnPos = new Vector3(LaneXPositions[noteData.lane], 0, baseCenterZ - distanceToMove);
@@ -431,7 +441,7 @@ public class GameManager : MonoBehaviour
         NoteObject noteScript = noteObj.GetComponent<NoteObject>();
 
         // 必要な情報を NoteObject に渡す
-        noteScript.Speed = NoteSpeed;
+        noteScript.Speed = notesSpeed;
         noteScript.Controller = this;
         noteScript.Lane = noteData.lane;
 
