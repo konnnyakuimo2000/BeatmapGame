@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
     [Header("エフェクト")]
     public GameObject ExcellentEffectPrefab;
     public GameObject GoodEffectPrefab;
-    public GameObject[] LineEffectPrefabs;
+    public GameObject[] LanePrefabs;
 
     [Header("ゲーム設定")]
     public float SpawnZ = 50f;       // ノーツが生成されるZ座標
@@ -167,9 +167,9 @@ public class GameManager : MonoBehaviour
         BGMSource.clip = CurrentBeatmap.audioClip;
 
         // 判定ラインのエフェクトを非アクティブ化
-        for (int i = 0; i < LineEffectPrefabs.Length; i++)
+        for (int i = 0; i < LanePrefabs.Length; i++)
         {
-            LineEffectPrefabs[i].SetActive(false);
+            LanePrefabs[i].transform.GetChild(0).gameObject.SetActive(false);
         }
 
         // シーンのトランジション処理を開始
@@ -574,11 +574,37 @@ public class GameManager : MonoBehaviour
         // ボーナス点を与える
         AddScore(longBonusScore);
 
+        // UI表示を有効化
+        GameObject bonusLane = LanePrefabs[laneIndex].transform.GetChild(1).gameObject;
+        bonusLane.SetActive(true);
+        StartCoroutine(FadeLongBonusUI(bonusLane.GetComponentInChildren<TextMeshProUGUI>()));
+
         // 保持状態を解除
         if (holdingNotes[laneIndex] != null)
         {
             holdingNotes[laneIndex] = null;
         }
+    }
+
+    private IEnumerator FadeLongBonusUI(TextMeshProUGUI fadeUIText)
+    {
+        float t = 0f;
+        Color initColor = fadeUIText.color;
+        while (t < 2.0f)
+        {
+            t += Time.deltaTime;
+            if (t < 1.0f) continue;
+
+            float alpha = (t - 1.0f) / 1.0f;
+
+            // 透明度を上げてフェードアウト
+            fadeUIText.color = Color.Lerp(initColor, new Color(0, 0, 0, 0), alpha);
+            yield return null;
+        }
+
+        // 再び非表示にして透明度を戻す
+        fadeUIText.transform.parent.gameObject.SetActive(false);
+        fadeUIText.color = initColor;
     }
 
     /// <summary>
@@ -588,7 +614,7 @@ public class GameManager : MonoBehaviour
     /// <param name="isTrigger">光らせる/元に戻す</param>
     private void SpawnLaneEffect(int laneIndex, bool isTrigger)
     {
-        LineEffectPrefabs[laneIndex].SetActive(isTrigger);
+        LanePrefabs[laneIndex].transform.GetChild(0).gameObject.SetActive(isTrigger);
     }
 
     /// <summary>

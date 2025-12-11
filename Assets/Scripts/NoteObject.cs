@@ -75,8 +75,6 @@ public class NoteObject : MonoBehaviour
     /// </summary>
     public void Hit()
     {
-        // （ここにエフェクト再生などを追加できる）
-
         Destroy(gameObject);
     }
 
