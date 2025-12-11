@@ -3016,7 +3016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dcc4a0e03838cc42b7e673f905b0cbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentBeatmap: {fileID: 11400000, guid: d9424fd2518865a4f8b55c1582215a50, type: 2}
+  CurrentBeatmap: {fileID: 11400000, guid: a0baf310919ddc247b2587f3bb6aa4ab, type: 2}
   LaneXPositions:
   - -3
   - -1
