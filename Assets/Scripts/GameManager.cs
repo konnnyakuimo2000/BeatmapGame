@@ -512,7 +512,7 @@ public class GameManager : MonoBehaviour
                 if (combo > 4)
                 {
                     ComboText.gameObject.SetActive(true);
-                    ComboText.text = $"{combo}コンボ!";
+                    ComboText.text = $"{combo} COMBO";
                 }
 
                 // 長押しノーツ

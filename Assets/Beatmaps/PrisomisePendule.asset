@@ -18,7 +18,7 @@ MonoBehaviour:
   beatsPerMeasure: 4
   firstBeatOffsetSec: 0
   notesSpeed: 10
-  backgroundImg: {fileID: 21300000, guid: cab45487cf227bd46b08346c13b85270, type: 3}
+  backgroundImg: {fileID: 7107687931089781869, guid: a9827db79e156f14c89e662ebf12e73e, type: 3}
   stepsPerMeasure: 16
   notes:
   - step: 0
