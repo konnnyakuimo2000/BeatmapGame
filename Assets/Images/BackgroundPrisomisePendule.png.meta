@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BackgroundPrisomisePendule_0: -3610230971370163366
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
