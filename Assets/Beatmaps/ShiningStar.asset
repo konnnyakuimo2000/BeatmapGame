@@ -18,7 +18,7 @@ MonoBehaviour:
   beatsPerMeasure: 4
   firstBeatOffsetSec: 0
   notesSpeed: 10
-  backgroundImg: {fileID: -3107411438713717968, guid: cab45487cf227bd46b08346c13b85270, type: 3}
+  backgroundImg: {fileID: 4537019931195084928, guid: afb21eab362015d46bd5e174952d534e, type: 3}
   stepsPerMeasure: 16
   notes:
   - step: 8
@@ -353,16 +353,16 @@ MonoBehaviour:
     lane: 3
   - step: 396
     length_in_steps: 1
-    lane: 0
-  - step: 396
-    length_in_steps: 1
     lane: 1
   - step: 396
     length_in_steps: 1
-    lane: 2
+    lane: 0
   - step: 396
     length_in_steps: 1
     lane: 3
+  - step: 396
+    length_in_steps: 1
+    lane: 2
   - step: 398
     length_in_steps: 1
     lane: 0
