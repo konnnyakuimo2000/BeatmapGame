@@ -42,6 +42,7 @@ public class TitleManager : MonoBehaviour
 
     [Header("トランジション")]
     public Image TransitionPanel;
+    public Image BackTransitionPanel;
 
     private TextMeshProUGUI instructionText;
     private float flashSpeed = 2.0f;
@@ -57,6 +58,7 @@ public class TitleManager : MonoBehaviour
     private Color inactiveColor = new Color(1, 1, 1, 0.4f);
     private Color selectedLabelColor = Color.yellow;
     private Color normalLabelColor = Color.white;
+    private static bool isFirstSceneLoad = true;
 
     void Start()
     {
@@ -85,6 +87,10 @@ public class TitleManager : MonoBehaviour
         // BGM音量メータの初期化
         bgmVolumeBars = BGMVolumeMeterParent.GetComponentsInChildren<Image>();
         UpdateBGMVolumeMeter();
+
+        // ゲームシーンからの遷移の場合はトランジションアニメーション
+        if (!isFirstSceneLoad) StartCoroutine(BackTransition());
+        isFirstSceneLoad = false;
     }
 
     void Update()
@@ -516,5 +522,85 @@ public class TitleManager : MonoBehaviour
 
         // シーン遷移
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    /// <summary>
+    /// ゲームシーンからのシーントランジション
+    /// </summary>
+    private IEnumerator BackTransition()
+    {
+        // 色の設定
+        Color[] colors = new Color[]
+        {
+            Color.black,
+            Color.seaGreen,
+            Color.lawnGreen,
+            Color.limeGreen,
+            Color.white
+        };
+
+        // 遅延時間の設定
+        float[] delays = new float[] { 0f, 0.4f, 0.6f, 0.75f, 0.84f };
+
+        List<Image> panels = new List<Image>();
+        List<Material> materials = new List<Material>();
+
+        BackTransitionPanel.gameObject.SetActive(true);
+        Transform parent = BackTransitionPanel.transform.parent;
+
+        for (int i = 0; i < colors.Length; i++)
+        {
+            Image panel;
+            // 0番目は既存のもの、それ以外は複製
+            if (i == 0) panel = BackTransitionPanel;
+            else panel = Instantiate(BackTransitionPanel, parent);
+
+            // 奥へ送る
+            panel.transform.SetAsFirstSibling();
+
+            // マテリアルを個別に複製
+            panel.material = new Material(BackTransitionPanel.material);
+            panel.material.SetColor("_Color", Color.white);
+            panel.material.SetFloat("_Radius", 0f); // 最初は穴なし
+            panel.color = colors[i];
+
+            panels.Add(panel);
+            materials.Add(panel.material);
+        }
+
+        // 順番を正しく並べ替える
+        for (int i = panels.Count - 1; i >= 0; i--)
+        {
+            panels[i].transform.SetAsLastSibling();
+        }
+
+        float duration = 0.8f;
+        float time = 0f;
+
+        while (time < duration + delays[delays.Length - 1])
+        {
+            time += Time.deltaTime;
+
+            // 各パネルの進捗率を計算
+            for (int i = 0; i < panels.Count; i++)
+            {
+                float t = Mathf.Clamp01((time - delays[i]) / duration);
+
+                // イージング
+                float progress = 1f - Mathf.Pow(1f - t, 4f);
+
+                // 半径を広げる
+                materials[i].SetFloat("_Radius", progress * 1.2f);
+            }
+
+            yield return null;
+        }
+
+        // 複製したパネルを削除/非表示にする
+        for (int i = 1; i < panels.Count; i++)
+        {
+            Destroy(panels[i].gameObject);
+        }
+        BackTransitionPanel.gameObject.SetActive(false);
     }
 }
