@@ -668,7 +668,6 @@ public class GameManager : MonoBehaviour
         {
             MaxComboText.enableVertexGradient = true;
             MaxComboText.fontSize = 160;
-            BGMSource.PlayOneShot(FullComboSE);
         }
 
         // ゲームUIの非表示
@@ -719,6 +718,7 @@ public class GameManager : MonoBehaviour
 
         // 最大コンボの表示
         BGMSource.PlayOneShot(ScoreAttributeSE);
+        BGMSource.PlayOneShot(FullComboSE);
         MaxComboText.gameObject.SetActive(true);
         yield return new WaitForSeconds(1.2f);
 
