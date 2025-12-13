@@ -51,11 +51,13 @@ public class GameManager : MonoBehaviour
 
     [Header("SE設定")]
     public AudioClip[] SEClips;
+    public AudioClip GameStartGingle;
     public AudioClip ScoreAttributeSE;
     public AudioClip ScoreTotalSE;
     public AudioClip ResultShowedGingle;
     public AudioClip FullComboSE;
     public AudioClip HighScoreSE;
+    public AudioClip BackSE;
 
     /// <summary>
     /// シーン間で選択された曲を渡す
@@ -313,10 +315,12 @@ public class GameManager : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.D))
                 {
+                    BGMSource.PlayOneShot(BackSE);
                     StartCoroutine(BackTransition(SceneManager.GetActiveScene().buildIndex - 1));
                 }
                 else if (Input.GetKeyDown(KeyCode.F))
                 {
+                    BGMSource.PlayOneShot(BackSE);
                     StartCoroutine(BackTransition(SceneManager.GetActiveScene().buildIndex));
                 }
                 else if (Input.GetKeyDown(KeyCode.J))
@@ -409,6 +413,9 @@ public class GameManager : MonoBehaviour
             Destroy(panels[i].gameObject);
         }
         TransitionPanel.gameObject.SetActive(false);
+        
+        // 終了直後にスタートジングルを流す
+        BGMSource.PlayOneShot(GameStartGingle);
     }
 
     /// <summary>
@@ -663,13 +670,6 @@ public class GameManager : MonoBehaviour
         BadText.text = badNum.ToString();
         MaxComboText.text = maxCombo.ToString();
 
-        // フルコンボの場合
-        if (maxCombo == CurrentBeatmap.notes.Count)
-        {
-            MaxComboText.enableVertexGradient = true;
-            MaxComboText.fontSize = 160;
-        }
-
         // ゲームUIの非表示
         GamingScore.gameObject.SetActive(false);
         ComboText.gameObject.SetActive(false);
@@ -718,21 +718,35 @@ public class GameManager : MonoBehaviour
 
         // 最大コンボの表示
         BGMSource.PlayOneShot(ScoreAttributeSE);
-        BGMSource.PlayOneShot(FullComboSE);
+        
+        // フルコンボの場合
+        if (maxCombo == CurrentBeatmap.notes.Count)
+        {
+            MaxComboText.fontSize = 110;
+            BGMSource.PlayOneShot(FullComboSE);
+        }
         MaxComboText.gameObject.SetActive(true);
         yield return new WaitForSeconds(1.2f);
 
         // スコアの表示
-        ResultScore.gameObject.SetActive(true);
-        BGMSource.PlayOneShot(ScoreTotalSE);
 
         // ハイスコアの場合
         if (score > highScore)
         {
-            yield return new WaitForSeconds(0.5f);
             highScore = score;
+            ResultScore.enableVertexGradient = true;
+            ResultScore.fontSize = 180;
+            BGMSource.PlayOneShot(ScoreTotalSE);
+            ResultScore.gameObject.SetActive(true);
+            
+            yield return new WaitForSeconds(0.5f);
             HighScoreText.gameObject.SetActive(true);
             BGMSource.PlayOneShot(HighScoreSE);
+        }
+        else
+        {
+            BGMSource.PlayOneShot(ScoreTotalSE);
+            ResultScore.gameObject.SetActive(true);
         }
         yield return new WaitForSeconds(1.6f);
 
