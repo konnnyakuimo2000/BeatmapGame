@@ -12,6 +12,7 @@ public class Beatmap : ScriptableObject
     public double firstBeatOffsetSec = 0.0; // 最初の拍までのオフセット(秒)
     public float notesSpeed = 10;
     public Sprite backgroundImg;
+    public int difficulty = 0; // 難易度 0~3
 
     [Header("エディタ設定")]
     // 1小節あたりのグリッド分割数

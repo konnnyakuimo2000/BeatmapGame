@@ -7,8 +7,9 @@ using System.Collections;
 
 public class TitleManager : MonoBehaviour
 {
-    public GameObject BackgroundFrame;
     [Header("オブジェクト参照")]
+    public GameObject TitleText;
+    public GameObject BackgroundFrame;
     public GameObject Instruction;
     public GameObject StartPanel;
     public Transform ScrollViewContent;
@@ -106,6 +107,7 @@ public class TitleManager : MonoBehaviour
         if (!StartPanel.activeSelf && !SettingPanel.activeSelf)
         {
             // 背景フレームを見せる
+            TitleText.SetActive(true);
             BackgroundFrame.SetActive(true);
 
             // Enterキーではじめる
@@ -138,6 +140,7 @@ public class TitleManager : MonoBehaviour
         else if (StartPanel.activeSelf)
         {
             // 背景フレームを見せない
+            TitleText.SetActive(false);
             BackgroundFrame.SetActive(false);
 
             // 上移動
@@ -189,6 +192,7 @@ public class TitleManager : MonoBehaviour
     void HandleSettingInput()
     {
         // 背景フレームを見せない
+        TitleText.SetActive(false);
         BackgroundFrame.SetActive(false);
 
         // 項目の移動
@@ -379,11 +383,16 @@ public class TitleManager : MonoBehaviour
             GameObject btnObj = Instantiate(musicButtonPrefab, ScrollViewContent);
 
             // 曲名を設定
-            TextMeshProUGUI btnText = btnObj.GetComponentInChildren<TextMeshProUGUI>();
-            if (btnText != null)
-            {
-                btnText.text = beatmap.title;
-            }
+            TextMeshProUGUI btnText = btnObj.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            btnText.text = beatmap.title;
+            
+            // 難易度の表示
+            TextMeshProUGUI difficultyText = btnObj.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            string[] difficultyStrings = new string[3]{"Easy", "Normal", "Hard"}; 
+            Color[] difficultyColor = new Color[3]{Color.paleGreen, Color.softYellow, Color.indianRed};
+            
+            difficultyText.text = difficultyStrings[beatmap.difficulty];
+            difficultyText.color = difficultyColor[beatmap.difficulty];
 
             // ボタンクリック時の動作を登録しておく
             Button btn = btnObj.GetComponent<Button>();
