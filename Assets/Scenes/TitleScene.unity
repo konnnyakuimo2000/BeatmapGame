@@ -522,6 +522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ac59b22c48e89b40b1be744138bdc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TitleText: {fileID: 2139252270}
   BackgroundFrame: {fileID: 284077372}
   Instruction: {fileID: 198506063}
   StartPanel: {fileID: 1507136287}
