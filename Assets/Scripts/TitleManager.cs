@@ -117,7 +117,6 @@ public class TitleManager : MonoBehaviour
 
                 // 一番上を選択状態にする
                 currentSelectionIndex = 0;
-                Canvas.ForceUpdateCanvases();
                 scrollRect.verticalNormalizedPosition = 1f;
                 UpdateSelectionVisual();
             }
